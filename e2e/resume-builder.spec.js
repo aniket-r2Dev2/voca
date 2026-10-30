@@ -133,6 +133,16 @@ test.describe('Resume Builder browser regression', () => {
     const download = await downloadPromise;
     expect(download.suggestedFilename()).toMatch(/Resume_Alex Engineer_\d{4}-\d{2}-\d{2}\.pdf/);
 
+    // The filename alone is insufficient: catch regression to empty or
+    // malformed exports when upgrading the jsPDF engine.
+    const pdfBytes = require('node:fs').readFileSync(await download.path());
+    expect(pdfBytes.length).toBeGreaterThan(1024);
+    expect(pdfBytes.subarray(0, 5).toString('ascii')).toBe('%PDF-');
+    const pdfBody = pdfBytes.toString('latin1');
+    expect(pdfBody.trimEnd().endsWith('%%EOF')).toBeTruthy();
+    expect(pdfBody).toMatch(/\/Type\s*\/Page\b/);
+
+
     await page.screenshot({ path: testInfo.outputPath('resume-desktop-full.png'), fullPage: true });
   });
 
