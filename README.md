@@ -1,6 +1,8 @@
-# 🧰 Work Experience Tracker & Resume Builder
+# Voca
 
-A privacy-first React application for tracking professional experience, building resumes, and comparing resumes against job descriptions.
+> Your career, clearly organised. Your next move, better prepared.
+
+A free, privacy-conscious career workspace for organising experience, building application documents, understanding role fit, and managing a job search.
 
 The project is intentionally **free and local-first**. The new Job Match feature uses a transparent rule-based engine that runs entirely in the browser — no OpenAI API, paid AI provider, backend, account, API key, or usage quota is required.
 
@@ -186,7 +188,7 @@ No new paid service, hosted database, AI API, or proprietary SDK is required by 
 ## 📁 Project Structure
 
 ```text
-work-exp-app/
+career-workbench/
 ├── e2e/
 │   ├── server.js
 │   ├── resume-builder.spec.js
@@ -215,45 +217,9 @@ work-exp-app/
 └── .github/workflows/deploy.yml
 ```
 
-## 🗺️ Roadmap
+## 🗺️ Product roadmap
 
-### Phase 1 — Foundation ✅
-- [x] Experience tracking
-- [x] Skills management
-- [x] Local persistence
-- [x] Import/export
-- [x] Responsive UI
-- [x] Dark mode
-
-### Phase 2 — Resume Builder ✅
-- [x] Profile
-- [x] Work experience
-- [x] Education
-- [x] Certifications
-- [x] Projects
-- [x] Three templates
-- [x] PDF export
-- [x] Print support
-
-### Phase 3 — Job Intelligence 🚧
-- [x] Local JD analyzer
-- [x] Resume/profile vs JD matching
-- [x] Required/preferred skill detection
-- [x] Match score
-- [x] Keyword gap analysis
-- [x] Skill-category coverage
-- [ ] Canonical profile skill library
-- [ ] Resume versions per target job
-- [ ] Job application tracker
-
-### Phase 4 — Optional AI, still privacy-conscious 🎯
-- [ ] AI-assisted rewriting with an explicitly optional provider
-- [ ] Tailored resume suggestions
-- [ ] Before/after comparison
-- [ ] User approval for every generated change
-- [ ] Never invent experience, metrics or skills
-
-Any future AI integration should remain optional. The core product must continue to work fully without a paid AI service.
+See the [Voca product vision and delivery roadmap](ROADMAP.md), including product principles, phase exit criteria, and the long-term plan.
 
 ## 🚀 Deployment
 

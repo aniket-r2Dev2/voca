@@ -10,7 +10,7 @@ const Navigation = () => {
   return (
     <nav className="bg-white dark:bg-slate-800 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-50 shadow-sm">
       <div className="container mx-auto px-4"><div className="flex items-center justify-between h-16 gap-2">
-        <Link to="/" className="flex items-center space-x-2 text-linkedin-600 hover:text-linkedin-700 transition-colors shrink-0"><Briefcase className="w-6 h-6" /><span className="font-bold text-lg hidden sm:inline">Work Experience Tracker</span><span className="font-bold text-lg sm:hidden">WE Tracker</span></Link>
+        <Link to="/" className="flex items-center space-x-2 text-linkedin-600 hover:text-linkedin-700 transition-colors shrink-0"><Briefcase className="w-6 h-6" /><span className="font-bold text-lg hidden sm:inline">Voca</span><span className="font-bold text-lg sm:hidden">Voca</span></Link>
         <div className="flex space-x-1 overflow-x-auto">
           <Link to="/" className={linkClass('/')}><Briefcase className="w-4 h-4" /><span className="hidden sm:inline">Experiences</span></Link>
           <Link to="/resume" className={linkClass('/resume')}><FileText className="w-4 h-4" /><span className="hidden sm:inline">Resume</span></Link>
