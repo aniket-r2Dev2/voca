@@ -17,7 +17,7 @@ module.exports = defineConfig({
   },
   webServer: {
     command: 'node e2e/server.js',
-    url: 'http://127.0.0.1:4173/work-exp-app/',
+    url: 'http://127.0.0.1:4173/voca/',
     reuseExistingServer: !process.env.CI,
     timeout: 60_000,
   },
