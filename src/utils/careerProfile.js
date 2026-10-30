@@ -179,3 +179,59 @@ export const saveCareerProfile = (
   storage.setItem(CAREER_PROFILE_STORAGE_KEY, JSON.stringify(saved));
   return saved;
 };
+
+
+/**
+ * One-time cutover for users who edited legacy fields after the initial
+ * canonical snapshot was created by the previous release. Legacy values
+ * remain available as the migration backup; future writes use only canonical.
+ */
+export const reconcileLegacyCareerProfile = (
+  storage,
+  now = () => new Date().toISOString()
+) => {
+  const result = migrateLegacyCareerProfile(storage, now);
+  if (!result.profile || result.profile.metadata.migration?.reconciledAt) return result;
+
+  const migration = result.profile.metadata.migration;
+  if (migration?.source !== 'legacy-local-storage') return result;
+
+  const warnings = [...result.warnings];
+  const legacyProfile = asObject(readLegacyValue(storage, LEGACY_STORAGE_KEYS.profile, warnings));
+  const legacyExperience = readLegacyValue(storage, LEGACY_STORAGE_KEYS.experience, warnings);
+  const legacySections = asObject(readLegacyValue(storage, LEGACY_STORAGE_KEYS.resumeSections, warnings));
+
+  const experienceArray = Array.isArray(legacyExperience)
+    ? legacyExperience
+    : asObject(legacyExperience)?.experiences;
+
+  const profile = {
+    ...result.profile,
+    profile: legacyProfile
+      ? { ...result.profile.profile, ...legacyProfile }
+      : result.profile.profile,
+    experiences: Array.isArray(experienceArray) ? experienceArray : result.profile.experiences,
+    education: Array.isArray(legacySections?.education)
+      ? legacySections.education : result.profile.education,
+    certifications: Array.isArray(legacySections?.certifications)
+      ? legacySections.certifications : result.profile.certifications,
+    projects: Array.isArray(legacySections?.projects)
+      ? legacySections.projects : result.profile.projects,
+    metadata: {
+      ...result.profile.metadata,
+      updatedAt: now(),
+      migration: { ...migration, reconciledAt: now() }
+    }
+  };
+
+  try {
+    storage.setItem(CAREER_PROFILE_STORAGE_KEY, JSON.stringify(profile));
+    return { status: 'reconciled', profile, warnings };
+  } catch {
+    return {
+      status: 'error',
+      profile: null,
+      warnings: ['Could not finish reconciling legacy edits. Existing data was not changed.']
+    };
+  }
+};
