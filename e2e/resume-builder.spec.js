@@ -223,4 +223,55 @@ test.describe('Resume Builder browser regression', () => {
     await expect(preview(page).getByText(profile.fullName)).toBeVisible();
   });
 
+
+  test('deletes all Voca local data but preserves other origin keys', async ({ page }, testInfo) => {
+    test.skip(testInfo.project.name !== 'chromium-desktop', 'Desktop-only destructive privacy test');
+    await page.evaluate(() => {
+      localStorage.setItem('voca_career_profile_v1', JSON.stringify({
+        schemaVersion: 1,
+        profile: { fullName: 'Private Person', email: 'private@example.com' },
+        experiences: [], education: [], certifications: [], projects: [],
+        skills: [], languages: [], volunteering: [],
+        metadata: { createdAt: new Date().toISOString(), updatedAt: new Date().toISOString(), migration: null }
+      }));
+      localStorage.setItem('user_profile_data', '{"fullName":"Old Profile"}');
+      localStorage.setItem('work_experience_data', '{"experiences":[]}');
+      localStorage.setItem('resume_sections_data', '{"projects":[]}');
+      localStorage.setItem('job_match_data', '{"jobDescription":"private JD"}');
+      localStorage.setItem('unrelated_origin_key', 'keep');
+    });
+    await page.reload({ waitUntil: 'domcontentloaded' });
+    await expect(preview(page).getByText('Private Person')).toBeVisible();
+
+    page.once('dialog', (dialog) => dialog.accept());
+    const reloaded = page.waitForEvent('load');
+    await page.getByRole('button', { name: 'Clear All Voca Data' }).click();
+    await reloaded;
+
+    const saved = await page.evaluate(() => ({
+      keys: [
+        'voca_career_profile_v1',
+        'user_profile_data',
+        'work_experience_data',
+        'resume_sections_data',
+        'job_match_data'
+      ].map((key) => localStorage.getItem(key)),
+      unrelated: localStorage.getItem('unrelated_origin_key')
+    }));
+    expect(saved.keys).toEqual([null, null, null, null, null]);
+    expect(saved.unrelated).toBe('keep');
+    await expect(page.getByRole('button', { name: 'Add Profile Info', exact: true }).first()).toBeVisible();
+    await page.reload({ waitUntil: 'domcontentloaded' });
+    expect(await page.evaluate(() => localStorage.getItem('voca_career_profile_v1'))).toBeNull();
+  });
+
+  test('canceling full deletion preserves the existing profile', async ({ page }, testInfo) => {
+    test.skip(testInfo.project.name !== 'chromium-desktop', 'Desktop-only destructive privacy test');
+    await addProfile(page);
+    page.once('dialog', (dialog) => dialog.dismiss());
+    await page.getByRole('button', { name: 'Clear All Voca Data' }).click();
+    await expect(preview(page).getByText(profile.fullName)).toBeVisible();
+    expect(await page.evaluate(() => JSON.parse(localStorage.getItem('voca_career_profile_v1')).profile.fullName)).toBe(profile.fullName);
+  });
+
 });
