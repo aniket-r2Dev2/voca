@@ -55,3 +55,34 @@ jobs:
           publish_dir: ./build
           publish_branch: gh-pages
           force_orphan: true
+
+      - name: Verify live GitHub Pages serves this build
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        shell: bash
+        run: |
+          set -euo pipefail
+          site_url="https://aniket-r2dev2.github.io/voca/"
+          asset_url="$(node -p "require('./build/asset-manifest.json').files['main.js']")"
+          if [[ "$asset_url" != /voca/static/js/main.*.js ]]; then
+            echo "::error::Unexpected production asset path: $asset_url"
+            exit 1
+          fi
+
+          # Pages publication is asynchronous after the gh-pages branch update.
+          for attempt in $(seq 1 30); do
+            if curl --fail --silent --show-error --location \
+                --connect-timeout 10 --max-time 20 "$site_url" -o /tmp/voca-live.html \
+              && grep -q '<title>Voca' /tmp/voca-live.html \
+              && grep -Fq "$asset_url" /tmp/voca-live.html \
+              && curl --fail --silent --show-error --location \
+                --connect-timeout 10 --max-time 20 \
+                "https://aniket-r2dev2.github.io$asset_url" -o /dev/null; then
+              echo "Verified: $site_url serves the current build and its JavaScript."
+              exit 0
+            fi
+            echo "Pages not yet serving current build (attempt $attempt/30)."
+            sleep 10
+          done
+
+          echo "::error::GitHub Pages did not serve the current Voca build."
+          exit 1
