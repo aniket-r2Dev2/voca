@@ -32,7 +32,7 @@ const Resume = () => {
   const currentTemplate = TEMPLATES.find((template) => template.id === selectedTemplate) || TEMPLATES[0];
   const TemplateComponent = currentTemplate.component;
 
-  const handleProfileUpdate = (updatedProfile) => { updateProfile(updatedProfile); setShowProfileForm(false); };
+  const handleProfileUpdate = (updatedProfile) => { if (updateProfile(updatedProfile)) setShowProfileForm(false); };
   const handlePrint = useReactToPrint({ content: () => resumeRef.current, documentTitle: `Resume_${profile.fullName || 'MyResume'}` });
 
   const handleDownloadPDF = async () => {
