@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import {
   CAREER_PROFILE_STORAGE_KEY,
-  migrateLegacyCareerProfile,
+  reconcileLegacyCareerProfile,
   saveCareerProfile
 } from '../utils/careerProfile';
 
@@ -15,7 +15,7 @@ const getStorage = () => {
   }
 };
 
-const readCareerProfile = () => migrateLegacyCareerProfile(getStorage()).profile;
+const readCareerProfile = () => reconcileLegacyCareerProfile(getStorage()).profile;
 
 /**
  * All editors use this hook to read and update the same versioned profile.
