@@ -188,7 +188,7 @@ No new paid service, hosted database, AI API, or proprietary SDK is required by 
 ## 📁 Project Structure
 
 ```text
-career-workbench/
+voca/
 ├── e2e/
 │   ├── server.js
 │   ├── resume-builder.spec.js
