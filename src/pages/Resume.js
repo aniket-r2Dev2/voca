@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { Download, Edit, Eye, FileText, Layout, Printer } from 'lucide-react';
+import { Download, Edit, Eye, FileText, Layout, Printer, Trash2 } from 'lucide-react';
 import { useReactToPrint } from 'react-to-print';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
@@ -14,6 +14,7 @@ import MinimalTemplate from '../components/resume/templates/MinimalTemplate';
 import Button from '../components/common/Button';
 import useCareerStore from '../hooks/useCareerStore';
 import { CAREER_BACKUP_MAX_BYTES, createCareerBackup, parseCareerBackup } from '../utils/careerBackup';
+import { deleteAllVocaLocalData } from '../utils/localDataPrivacy';
 
 const TEMPLATES = [
   { id: 'classic', name: 'Classic', description: 'Traditional serif design', component: ClassicTemplate },
@@ -111,6 +112,22 @@ const Resume = () => {
     }
   };
 
+  const handleClearAllVocaData = () => {
+    const approved = window.confirm(
+      'Delete ALL Voca data saved in this browser? This removes your career profile, work history, resume sections, legacy backups and job matches. This cannot be undone. Download a full backup first if you need one.'
+    );
+    if (!approved) return;
+
+    try {
+      deleteAllVocaLocalData(window.localStorage);
+      // Reload immediately so all mounted editors and job-match states reset.
+      window.location.reload();
+    } catch (error) {
+      console.error('Failed to clear Voca browser data:', error);
+      setBackupError('Could not delete all Voca data. Please check browser permissions and try again.');
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 py-12 px-4">
       <div className="max-w-6xl mx-auto">
@@ -149,6 +166,13 @@ const Resume = () => {
               </div>
             </div>
           )}
+        </section>
+
+        <section aria-label="Privacy and local data controls" className="mb-8 rounded-xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-700 dark:bg-slate-800">
+          <h2 className="text-lg font-semibold text-gray-800 dark:text-white">Your data stays yours</h2>
+          <p className="mt-1 mb-4 text-sm text-gray-600 dark:text-gray-300">No login or account is needed. Career details and job matches stay in this browser, not on a Voca server. Save a backup before clearing this device.</p>
+          <Button variant="danger" onClick={handleClearAllVocaData}><Trash2 className="w-4 h-4 mr-2" />Clear All Voca Data</Button>
+          <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">This also removes old migration records and saved job descriptions. Other websites and downloaded backup files are not affected.</p>
         </section>
 
         <div data-testid="resume-preview" className="print:shadow-none bg-white dark:bg-slate-800 rounded-2xl shadow-2xl overflow-hidden"><TemplateComponent ref={resumeRef} profile={profile} experiences={experiences} education={education} certifications={certifications} projects={projects} /></div>
