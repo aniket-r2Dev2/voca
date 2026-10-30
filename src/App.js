@@ -9,7 +9,7 @@ import { migrateLegacyCareerProfile } from './utils/careerProfile';
 const getBrowserStorage = () => {
   try {
     return typeof window !== 'undefined' ? window.localStorage : null;
-  } catch (error) {
+  } catch {
     return null;
   }
 };
