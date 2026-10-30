@@ -147,3 +147,35 @@ export const migrateLegacyCareerProfile = (
     };
   }
 };
+
+
+/**
+ * Applies a change to the latest canonical record. Never writes to legacy keys.
+ * Throws rather than overwriting an invalid or unreadable stored profile.
+ */
+export const saveCareerProfile = (
+  storage,
+  change,
+  now = () => new Date().toISOString()
+) => {
+  const loaded = migrateLegacyCareerProfile(storage, now);
+  if (!loaded.profile) {
+    throw new Error(loaded.warnings[0] || 'Career profile is unavailable.');
+  }
+
+  const updated = typeof change === 'function' ? change(loaded.profile) : change;
+  if (!isCareerProfile(updated)) {
+    throw new Error('Refusing to save an invalid career profile.');
+  }
+
+  const saved = {
+    ...updated,
+    metadata: {
+      ...updated.metadata,
+      createdAt: loaded.profile.metadata.createdAt,
+      updatedAt: now()
+    }
+  };
+  storage.setItem(CAREER_PROFILE_STORAGE_KEY, JSON.stringify(saved));
+  return saved;
+};
