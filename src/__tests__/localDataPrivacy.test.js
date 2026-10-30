@@ -51,6 +51,12 @@ describe('local privacy controls', () => {
     expect(() => deleteAllVocaLocalData(makeStorage())).not.toThrow();
   });
 
+  test('blocked reads are routed through normal storage error handling', () => {
+    const storage = makeStorage();
+    storage.getItem.mockImplementation(() => { throw new Error('blocked'); });
+    expect(hasStoredCareerData(storage)).toBe(true);
+  });
+
   test('refuses to delete when storage is unavailable', () => {
     expect(() => deleteAllVocaLocalData(null)).toThrow('unavailable');
   });
