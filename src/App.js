@@ -5,6 +5,7 @@ import Dashboard from './pages/Dashboard';
 import Resume from './pages/Resume';
 import JobMatch from './pages/JobMatch';
 import { migrateLegacyCareerProfile } from './utils/careerProfile';
+import { hasStoredCareerData } from './utils/localDataPrivacy';
 
 const getBrowserStorage = () => {
   try {
@@ -15,7 +16,13 @@ const getBrowserStorage = () => {
 };
 
 const App = () => {
-  const [profileBootstrap] = useState(() => migrateLegacyCareerProfile(getBrowserStorage()));
+  const [profileBootstrap] = useState(() => {
+    const storage = getBrowserStorage();
+    if (storage && !hasStoredCareerData(storage)) {
+      return { status: 'empty' }; // Opening an empty app must not recreate deleted data.
+    }
+    return migrateLegacyCareerProfile(storage);
+  });
 
   return (
     <Router>
