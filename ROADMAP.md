@@ -1,4 +1,4 @@
-# CareerWorkbench — Product Vision & Roadmap
+# Voca — Product Vision & Roadmap
 
 > **Tagline:** Your career, clearly organised. Your next move, better prepared.
 
@@ -31,7 +31,7 @@ A welcoming, privacy-conscious career workspace for students, graduates, experie
 ## Roadmap
 
 ### Phase 0 — Rebrand, product foundations, quality baseline
-- [ ] Adopt CareerWorkbench identity across the app and docs.
+- [ ] Adopt Voca identity across the app and docs.
 - [ ] Audit routes, components, persistence, dependencies, accessibility.
 - [ ] Establish browser/device support, performance budgets, and CI baseline.
 - [ ] Add accessibility checks and document privacy/data-flow boundaries.
