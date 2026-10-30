@@ -106,6 +106,12 @@ test.describe('Resume Builder browser regression', () => {
     await expect(page.getByText('AWS Certified Developer')).toBeVisible();
     await expectPreviewProject(page);
 
+    const savedCareer = await page.evaluate(() => JSON.parse(localStorage.getItem('voca_career_profile_v1')));
+    expect(savedCareer.profile.fullName).toBe(profile.fullName);
+    expect(savedCareer.education).toHaveLength(1);
+    expect(savedCareer.certifications).toHaveLength(1);
+    expect(savedCareer.projects).toHaveLength(1);
+
     for (const template of ['Classic', 'Modern', 'Minimal']) {
       await page.getByRole('button', { name: new RegExp(`^${template}`) }).click();
       await expect(preview(page).getByText('Alex Engineer')).toBeVisible();
@@ -148,4 +154,33 @@ test.describe('Resume Builder browser regression', () => {
     expect(await assertNoHorizontalOverflow(page)).toBeTruthy();
     await page.screenshot({ path: testInfo.outputPath('resume-mobile.png'), fullPage: true });
   });
+
+  test('migrated legacy edits remain visible and future edits only update canonical storage', async ({ page }, testInfo) => {
+    test.skip(testInfo.project.name !== 'chromium-desktop', 'Desktop-only migration test');
+
+    await page.evaluate(() => {
+      localStorage.clear();
+      localStorage.setItem('user_profile_data', JSON.stringify({
+        fullName: 'Legacy Candidate', headline: 'Engineer', email: 'legacy@example.com'
+      }));
+    });
+    await page.reload({ waitUntil: 'domcontentloaded' });
+
+    await expect(preview(page).getByText('Legacy Candidate')).toBeVisible();
+    await page.getByRole('button', { name: 'Edit Profile' }).click();
+    await page.getByLabel('Full Name').fill('Updated Candidate');
+    await page.getByRole('button', { name: 'Save Profile' }).click();
+
+    await expect(preview(page).getByText('Updated Candidate')).toBeVisible();
+    const saved = await page.evaluate(() => ({
+      canonical: JSON.parse(localStorage.getItem('voca_career_profile_v1')),
+      legacy: JSON.parse(localStorage.getItem('user_profile_data'))
+    }));
+    expect(saved.canonical.profile.fullName).toBe('Updated Candidate');
+    expect(saved.legacy.fullName).toBe('Legacy Candidate');
+
+    await page.reload({ waitUntil: 'domcontentloaded' });
+    await expect(preview(page).getByText('Updated Candidate')).toBeVisible();
+  });
+
 });
