@@ -65,7 +65,7 @@ const readLegacyValue = (storage, key, warnings) => {
 
   try {
     return JSON.parse(raw);
-  } catch (error) {
+  } catch {
     warnings.push(`Could not parse legacy data in "${key}". The original value was kept.`);
     return null;
   }
@@ -95,7 +95,7 @@ export const migrateLegacyCareerProfile = (
           profile: null,
           warnings: ['The saved Voca profile has an unsupported structure. Existing data was not changed.']
         };
-      } catch (error) {
+      } catch {
         return {
           status: 'invalid-canonical',
           profile: null,
@@ -139,7 +139,7 @@ export const migrateLegacyCareerProfile = (
       profile: migrated,
       warnings
     };
-  } catch (error) {
+  } catch {
     return {
       status: 'error',
       profile: null,
