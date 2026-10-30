@@ -7,6 +7,7 @@ const HOST = '127.0.0.1';
 const BASE_PATH = '/voca';
 const BUILD_DIR = path.resolve(__dirname, '..', 'build');
 const INDEX_FILE = path.join(BUILD_DIR, 'index.html');
+const NOT_FOUND_FILE = path.join(BUILD_DIR, '404.html');
 
 const MIME_TYPES = {
   '.html': 'text/html; charset=utf-8',
@@ -23,9 +24,9 @@ const MIME_TYPES = {
   '.ttf': 'font/ttf',
 };
 
-function sendFile(res, filePath) {
+function sendFile(res, filePath, status = 200) {
   const extension = path.extname(filePath).toLowerCase();
-  res.writeHead(200, { 'Content-Type': MIME_TYPES[extension] || 'application/octet-stream' });
+  res.writeHead(status, { 'Content-Type': MIME_TYPES[extension] || 'application/octet-stream' });
   fs.createReadStream(filePath).pipe(res);
 }
 
@@ -48,9 +49,11 @@ const server = http.createServer((req, res) => {
     return sendFile(res, requestedFile);
   }
 
-  // React Router routes must resolve to the SPA entry point. This mirrors
-  // GitHub Pages' SPA fallback while keeping /voca as the basename.
-  return sendFile(res, INDEX_FILE);
+  // Match GitHub Pages: unknown paths return the custom 404 redirect rather
+  // than silently serving index.html with HTTP 200.
+  if (fs.existsSync(NOT_FOUND_FILE)) return sendFile(res, NOT_FOUND_FILE, 404);
+  res.writeHead(404, { 'Content-Type': 'text/plain' });
+  res.end('Not found');
 });
 
 server.listen(PORT, HOST, () => {
