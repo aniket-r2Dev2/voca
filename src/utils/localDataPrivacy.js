@@ -12,9 +12,14 @@ export const VOCA_LOCAL_STORAGE_KEYS = Object.freeze([
 
 export const hasStoredCareerData = (storage) => {
   if (!storage || typeof storage.getItem !== 'function') return false;
-  return VOCA_LOCAL_STORAGE_KEYS
-    .filter((key) => key !== LEGACY_STORAGE_KEYS.jobMatch)
-    .some((key) => storage.getItem(key) !== null);
+  try {
+    return VOCA_LOCAL_STORAGE_KEYS
+      .filter((key) => key !== LEGACY_STORAGE_KEYS.jobMatch)
+      .some((key) => storage.getItem(key) !== null);
+  } catch {
+    // Let the existing migration/error path warn when storage access is blocked.
+    return true;
+  }
 };
 
 export const deleteAllVocaLocalData = (storage) => {
