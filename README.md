@@ -4,7 +4,7 @@
 
 A free, privacy-conscious career workspace for organising experience, building application documents, understanding role fit, and managing a job search.
 
-The project is intentionally **free and local-first**. The new Job Match feature uses a transparent rule-based engine that runs entirely in the browser — no OpenAI API, paid AI provider, backend, account, API key, or usage quota is required.
+The project is intentionally **free, open-source, account-free and local-first**. The new Job Match feature uses a transparent rule-based engine that runs entirely in the browser — no OpenAI API, paid AI provider, backend, account, API key, or usage quota is required.
 
 ## ✨ Features
 
@@ -58,6 +58,7 @@ Every pull request and push runs:
 - PDF download checks
 - Job Match analysis and persistence checks
 - GitHub Pages deployment only after all checks pass
+- Separate dependency security-audit report on PRs and main (advisory report, not an automatic dependency upgrade)
 
 ## 🚀 Getting Started
 
@@ -97,7 +98,7 @@ npm run build
 npm run test:e2e
 ```
 
-The browser suite starts the built application with the repository's GitHub Pages basename so routing is tested in the same shape as production.
+The browser suite serves the built application under `/voca/` and tests the same refresh-safe hash routes used by GitHub Pages.
 
 ## 🎯 How to Use
 
@@ -147,16 +148,18 @@ The score is designed to be transparent rather than pretending to be an authorit
 
 When a JD contains no recognized keywords, the analyzer does not penalize the user for something it cannot understand.
 
-## 🔒 Privacy & Free-Use Principles
+## 🔒 Privacy, Login & Storage (Paperkit-aligned)
 
-- Career data is stored in browser LocalStorage.
-- Job descriptions and Job Match results are stored locally.
-- Job Match has no backend and no external AI calls.
-- No paid package is required for Job Match.
-- No API key is required for Job Match.
-- Export/import lets users keep control of their data.
+- **No login, registration, OAuth, user accounts or paywall** for the core experience, just like [Paperkit](https://github.com/aniket-r2Dev2/paperkit).
+- **Career data stays local and persists intentionally:** Voca saves a versioned career profile in the current browser's LocalStorage so you can return to an unfinished resume. This differs from Paperkit's throwaway PDF-processing session by design.
+- **Resume files are not uploaded to a Voca server.** Downloads are generated locally, and no Voca-hosted database is required. Do not log real resume contents or personal data.
+- **Backup and restore:** Open Resume and select **Download Full Backup** or **Restore a Voca JSON backup**. Restores require an explicit preview and confirmation.
+- **Job Match runs locally:** Job descriptions and analysis remain in LocalStorage; no remote AI provider or paid API is required.
+- **Shared browser caution:** LocalStorage is not encrypted and does not automatically sync across browsers or devices. Clearing browser storage can erase your data. Download a backup before switching devices or clearing your browser.
+- **Optional future AI:** No API key stored by default; sending profile data to external providers must be opt-in and disclosed before every request.
 
-Some older autocomplete functionality in the application may use optional external data integrations. The Job Match feature intentionally does **not** add any paid dependency or external service.
+Read [Security and Privacy](docs/SECURITY_AND_PRIVACY.md) for the storage map and lifecycle policy. For vulnerability reports, follow [SECURITY.md](SECURITY.md).
+
 
 ## 🧱 Technology Stack
 
@@ -237,12 +240,13 @@ The deployment job is deliberately last in the pipeline, so a failing unit test,
 
 ## 🤝 Contributing
 
-1. Create a feature branch.
-2. Implement the feature with unit tests.
-3. Add Playwright coverage for user-visible workflows where appropriate.
-4. Run the production build.
-5. Open a pull request.
-6. Merge only after CI is green.
+Voca is an **MIT-licensed public open-source project**. Contributions are welcome.
+
+- Read [CONTRIBUTING.md](CONTRIBUTING.md) for the feature-branch, review, accessibility, privacy and test checklist.
+- Use the GitHub **bug report** or **feature request** issue templates.
+- All contributor changes go through PRs and require approval. The owner can merge their own PRs under the same active branch rules.
+- Never merge while checks are pending or failing: confirm the **latest commit's** unit/build and browser CI is green, then verify the main deployment after merge.
+- Review dependency vulnerabilities in the separate **Dependency Security Audit** workflow and its uploaded report; actionable fixes should be tracked in scoped issues.
 
 ## 📄 License
 
