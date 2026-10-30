@@ -4,7 +4,7 @@ const path = require('path');
 
 const PORT = Number(process.env.PORT || 4173);
 const HOST = '127.0.0.1';
-const BASE_PATH = '/work-exp-app';
+const BASE_PATH = '/voca';
 const BUILD_DIR = path.resolve(__dirname, '..', 'build');
 const INDEX_FILE = path.join(BUILD_DIR, 'index.html');
 
@@ -49,7 +49,7 @@ const server = http.createServer((req, res) => {
   }
 
   // React Router routes must resolve to the SPA entry point. This mirrors
-  // GitHub Pages' SPA fallback while keeping /work-exp-app as the basename.
+  // GitHub Pages' SPA fallback while keeping /voca as the basename.
   return sendFile(res, INDEX_FILE);
 });
 
