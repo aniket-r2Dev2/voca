@@ -69,8 +69,8 @@ Every pull request and push runs:
 ### Installation
 
 ```bash
-git clone https://github.com/aniket-r2Dev2/work-exp-app.git
-cd work-exp-app
+git clone https://github.com/aniket-r2Dev2/voca.git
+cd voca
 npm install
 npm start
 ```
@@ -227,7 +227,7 @@ The production site is deployed through GitHub Pages after the CI pipeline passe
 
 Live app:
 
-https://aniket-r2dev2.github.io/work-exp-app/
+https://aniket-r2dev2.github.io/voca/
 
 GitHub Actions workflow:
 
