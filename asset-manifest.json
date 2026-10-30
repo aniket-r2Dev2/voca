@@ -1,0 +1,17 @@
+{
+  "files": {
+    "main.css": "/voca/static/css/main.2a7d73b5.css",
+    "main.js": "/voca/static/js/main.d377d6de.js",
+    "static/js/977.117341db.chunk.js": "/voca/static/js/977.117341db.chunk.js",
+    "static/js/455.aa3d1128.chunk.js": "/voca/static/js/455.aa3d1128.chunk.js",
+    "index.html": "/voca/index.html",
+    "main.2a7d73b5.css.map": "/voca/static/css/main.2a7d73b5.css.map",
+    "main.d377d6de.js.map": "/voca/static/js/main.d377d6de.js.map",
+    "977.117341db.chunk.js.map": "/voca/static/js/977.117341db.chunk.js.map",
+    "455.aa3d1128.chunk.js.map": "/voca/static/js/455.aa3d1128.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.2a7d73b5.css",
+    "static/js/main.d377d6de.js"
+  ]
+}
