@@ -7,7 +7,7 @@ import JobMatch from './pages/JobMatch';
 
 const App = () => {
   return (
-    <Router basename="/work-exp-app">
+    <Router basename={process.env.PUBLIC_URL || "/"}>
       <div className="min-h-screen bg-gradient-to-br from-linkedin-50 via-white to-linkedin-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
         <Navigation />
         <Routes>
