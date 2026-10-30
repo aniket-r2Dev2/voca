@@ -2,7 +2,7 @@ import React, { useRef, useState } from 'react';
 import { Download, Edit, Eye, FileText, Layout, Printer, Trash2 } from 'lucide-react';
 import { useReactToPrint } from 'react-to-print';
 import html2canvas from 'html2canvas';
-import jsPDF from 'jspdf';
+import { jsPDF } from 'jspdf';
 import useProfile from '../hooks/useProfile';
 import useExperience from '../hooks/useExperience';
 import useResumeSections from '../hooks/useResumeSections';
