@@ -1,4 +1,4 @@
-# CareerWorkbench
+# Voca
 
 > Your career, clearly organised. Your next move, better prepared.
 
@@ -219,7 +219,7 @@ career-workbench/
 
 ## 🗺️ Product roadmap
 
-See the [CareerWorkbench product vision and delivery roadmap](ROADMAP.md), including product principles, phase exit criteria, and the long-term plan.
+See the [Voca product vision and delivery roadmap](ROADMAP.md), including product principles, phase exit criteria, and the long-term plan.
 
 ## 🚀 Deployment
 
