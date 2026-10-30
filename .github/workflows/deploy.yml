@@ -56,7 +56,7 @@ jobs:
           publish_branch: gh-pages
           force_orphan: true
 
-- name: Verify live GitHub Pages serves this build
+      - name: Verify live GitHub Pages serves this build
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         shell: bash
         run: |
