@@ -12,6 +12,8 @@ import ClassicTemplate from '../components/resume/templates/ClassicTemplateV2';
 import ModernTemplate from '../components/resume/templates/ModernTemplateV2';
 import MinimalTemplate from '../components/resume/templates/MinimalTemplate';
 import Button from '../components/common/Button';
+import useCareerStore from '../hooks/useCareerStore';
+import { CAREER_BACKUP_MAX_BYTES, createCareerBackup, parseCareerBackup } from '../utils/careerBackup';
 
 const TEMPLATES = [
   { id: 'classic', name: 'Classic', description: 'Traditional serif design', component: ClassicTemplate },
@@ -21,6 +23,9 @@ const TEMPLATES = [
 
 const Resume = () => {
   const { profile, updateProfile } = useProfile();
+  const { careerProfile, restore } = useCareerStore();
+  const [backupPreview, setBackupPreview] = useState(null);
+  const [backupError, setBackupError] = useState('');
   const { experiences } = useExperience();
   const { education, certifications, projects, updateSections } = useResumeSections();
   const [showProfileForm, setShowProfileForm] = useState(false);
@@ -59,6 +64,53 @@ const Resume = () => {
     } finally { setIsExporting(false); }
   };
 
+
+  const downloadCareerBackup = () => {
+    try {
+      const content = createCareerBackup(careerProfile);
+      const blob = new Blob([content], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'voca-career-backup-' + new Date().toISOString().split('T')[0] + '.json';
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+      setBackupError('');
+    } catch (error) {
+      setBackupError(error.message || 'Could not export the career-profile backup.');
+    }
+  };
+
+  const selectCareerBackup = async (event) => {
+    const file = event.target.files?.[0];
+    event.target.value = '';
+    setBackupPreview(null);
+    setBackupError('');
+    if (!file) return;
+    if (file.size > CAREER_BACKUP_MAX_BYTES) {
+      setBackupError('The backup file must be 2 MB or smaller.');
+      return;
+    }
+    try {
+      const content = await file.text();
+      setBackupPreview(parseCareerBackup(content));
+    } catch (error) {
+      setBackupError(error.message || 'Could not read the selected backup.');
+    }
+  };
+
+  const confirmCareerRestore = () => {
+    if (!backupPreview) return;
+    const name = backupPreview.profile.fullName || 'this career profile';
+    if (!window.confirm('Replace your current Voca career profile with the backup for ' + name + '? Your current profile, experience and resume sections will be replaced.')) return;
+    if (restore(backupPreview)) {
+      setBackupPreview(null);
+      setBackupError('');
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 py-12 px-4">
       <div className="max-w-6xl mx-auto">
@@ -73,6 +125,31 @@ const Resume = () => {
 
         {showProfileForm && <ProfileForm profile={profile} onUpdate={handleProfileUpdate} onCancel={() => setShowProfileForm(false)} />}
         {showSectionsForm && <ResumeSectionsForm education={education} certifications={certifications} projects={projects} onChange={(key, value) => updateSections({ [key]: value })} />}
+
+        <section aria-label="Career profile backup and restore" className="mb-8 rounded-xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-700 dark:bg-slate-800">
+          <h2 className="text-lg font-semibold text-gray-800 dark:text-white">Back up your career profile</h2>
+          <p className="mt-1 mb-4 text-sm text-gray-600 dark:text-gray-300">Download all your career details as JSON, or select a previous Voca backup to review before restoring. Everything stays in your browser.</p>
+          <div className="flex flex-wrap items-center gap-4">
+            <Button onClick={downloadCareerBackup} variant="secondary"><Download className="w-4 h-4 mr-2" />Download Full Backup</Button>
+            <div>
+              <label htmlFor="voca-career-backup-file" className="block text-sm font-medium text-gray-700 dark:text-gray-200">Restore a Voca JSON backup (max 2 MB)</label>
+              <input id="voca-career-backup-file" aria-label="Choose Voca backup file" className="mt-1 block w-full max-w-xs text-sm text-gray-700 dark:text-gray-200" type="file" accept=".json,application/json" onChange={selectCareerBackup} />
+            </div>
+          </div>
+          {backupError && <p role="alert" className="mt-3 text-sm text-red-700 dark:text-red-300">{backupError}</p>}
+          {backupPreview && (
+            <div className="mt-4 rounded-lg border border-amber-300 bg-amber-50 p-4 dark:border-amber-700 dark:bg-amber-950">
+              <h3 className="font-semibold text-amber-900 dark:text-amber-100">Review backup before replacing your data</h3>
+              <p className="mt-1 text-sm text-amber-900 dark:text-amber-100">
+                {backupPreview.profile.fullName || 'Unnamed profile'} — {backupPreview.experiences.length} experiences, {backupPreview.education.length} education entries, {backupPreview.projects.length} projects.
+              </p>
+              <div className="mt-3 flex flex-wrap gap-3">
+                <Button onClick={confirmCareerRestore}>Confirm Restore</Button>
+                <Button variant="secondary" onClick={() => setBackupPreview(null)}>Cancel Restore</Button>
+              </div>
+            </div>
+          )}
+        </section>
 
         <div data-testid="resume-preview" className="print:shadow-none bg-white dark:bg-slate-800 rounded-2xl shadow-2xl overflow-hidden"><TemplateComponent ref={resumeRef} profile={profile} experiences={experiences} education={education} certifications={certifications} projects={projects} /></div>
 
