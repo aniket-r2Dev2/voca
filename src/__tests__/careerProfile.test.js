@@ -3,7 +3,9 @@ import {
   LEGACY_STORAGE_KEYS,
   createEmptyCareerProfile,
   isCareerProfile,
-  migrateLegacyCareerProfile
+  migrateLegacyCareerProfile,
+  reconcileLegacyCareerProfile,
+  saveCareerProfile
 } from '../utils/careerProfile';
 
 const createStorage = (initial = {}) => {
@@ -113,4 +115,86 @@ describe('careerProfile', () => {
   test('returns an error result when storage is unavailable', () => {
     expect(migrateLegacyCareerProfile(null).status).toBe('error');
   });
+
+  test('saves changes to the canonical profile without touching legacy backup data', () => {
+    const legacy = JSON.stringify({ fullName: 'Original Name' });
+    const storage = createStorage({ [LEGACY_STORAGE_KEYS.profile]: legacy });
+    const initial = migrateLegacyCareerProfile(storage, () => timestamp).profile;
+
+    const result = saveCareerProfile(storage, (current) => ({
+      ...current,
+      profile: { ...current.profile, fullName: 'New Name' }
+    }), () => '2026-10-31T00:00:00.000Z');
+
+    expect(result.profile.fullName).toBe('New Name');
+    expect(result.metadata.createdAt).toBe(initial.metadata.createdAt);
+    expect(result.metadata.updatedAt).toBe('2026-10-31T00:00:00.000Z');
+    expect(storage.getItem(LEGACY_STORAGE_KEYS.profile)).toBe(legacy);
+    expect(JSON.parse(storage.getItem(CAREER_PROFILE_STORAGE_KEY)).profile.fullName).toBe('New Name');
+  });
+
+  test('refuses to write when the canonical record is malformed', () => {
+    const storage = createStorage({ [CAREER_PROFILE_STORAGE_KEY]: '{broken' });
+    expect(() => saveCareerProfile(storage, (current) => current)).toThrow();
+    expect(storage.getItem(CAREER_PROFILE_STORAGE_KEY)).toBe('{broken');
+    expect(storage.setItem).not.toHaveBeenCalled();
+  });
+
+  test('refuses an invalid candidate without corrupting existing data', () => {
+    const canonical = createEmptyCareerProfile(timestamp);
+    const original = JSON.stringify(canonical);
+    const storage = createStorage({ [CAREER_PROFILE_STORAGE_KEY]: original });
+    expect(() => saveCareerProfile(storage, () => ({ schemaVersion: 2 }))).toThrow();
+    expect(storage.getItem(CAREER_PROFILE_STORAGE_KEY)).toBe(original);
+    expect(storage.setItem).not.toHaveBeenCalled();
+  });
+
+  test('reconciles legacy edits made after the initial migration exactly once', () => {
+    const storage = createStorage({
+      [LEGACY_STORAGE_KEYS.profile]: JSON.stringify({ fullName: 'Before' }),
+      [LEGACY_STORAGE_KEYS.experience]: JSON.stringify({ experiences: [{ id: 1, company: 'Old', position: 'Dev' }] })
+    });
+    migrateLegacyCareerProfile(storage, () => timestamp);
+    storage.setItem(LEGACY_STORAGE_KEYS.profile, JSON.stringify({ fullName: 'After' }));
+    storage.setItem(LEGACY_STORAGE_KEYS.experience, JSON.stringify({
+      experiences: [{ id: 2, company: 'New', position: 'Lead' }]
+    }));
+
+    const reconciled = reconcileLegacyCareerProfile(storage, () => timestamp);
+    expect(reconciled.status).toBe('reconciled');
+    expect(reconciled.profile.profile.fullName).toBe('After');
+    expect(reconciled.profile.experiences[0].company).toBe('New');
+    expect(reconciled.profile.metadata.migration.reconciledAt).toBe(timestamp);
+
+    storage.setItem(LEGACY_STORAGE_KEYS.profile, JSON.stringify({ fullName: 'Stale copy' }));
+    storage.setItem.mockClear();
+    const subsequent = reconcileLegacyCareerProfile(storage, () => timestamp);
+    expect(subsequent.status).toBe('existing');
+    expect(subsequent.profile.profile.fullName).toBe('After');
+    expect(storage.setItem).not.toHaveBeenCalled();
+  });
+
+  test('preserves canonical data when a legacy field is malformed during reconciliation', () => {
+    const storage = createStorage({
+      [LEGACY_STORAGE_KEYS.profile]: JSON.stringify({ fullName: 'Original' })
+    });
+    migrateLegacyCareerProfile(storage, () => timestamp);
+    storage.setItem(LEGACY_STORAGE_KEYS.profile, '{invalid');
+    const reconciled = reconcileLegacyCareerProfile(storage, () => timestamp);
+    expect(reconciled.profile.profile.fullName).toBe('Original');
+    expect(reconciled.warnings).toHaveLength(1);
+    expect(storage.getItem(LEGACY_STORAGE_KEYS.profile)).toBe('{invalid');
+  });
+
+  test('propagates storage write failures without replacing a valid record', () => {
+    const current = createEmptyCareerProfile(timestamp);
+    const storage = createStorage({ [CAREER_PROFILE_STORAGE_KEY]: JSON.stringify(current) });
+    storage.setItem.mockImplementation(() => { throw new Error('quota exceeded'); });
+    expect(() => saveCareerProfile(storage, () => ({
+      ...current,
+      profile: { ...current.profile, fullName: 'Unsaved' }
+    }))).toThrow('quota exceeded');
+    expect(JSON.parse(storage.getItem(CAREER_PROFILE_STORAGE_KEY)).profile.fullName).toBe('');
+  });
+
 });
