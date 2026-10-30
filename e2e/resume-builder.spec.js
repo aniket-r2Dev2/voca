@@ -15,7 +15,7 @@ async function openResume(page) {
   const pageErrors = [];
   page.on('pageerror', (error) => pageErrors.push(error));
 
-  const response = await page.goto('./resume', { waitUntil: 'domcontentloaded' });
+  const response = await page.goto('./#/resume', { waitUntil: 'domcontentloaded' });
   expect(response).not.toBeNull();
   expect(response.status()).toBeLessThan(400);
 
