@@ -106,7 +106,7 @@ const useExperience = () => {
         experiences,
         version: STORAGE_VERSION,
         exportedAt: new Date().toISOString(),
-        appName: 'Work Experience Tracker'
+        appName: 'Voca'
       };
       
       const dataStr = JSON.stringify(dataToExport, null, 2);
@@ -115,7 +115,7 @@ const useExperience = () => {
       
       const link = document.createElement('a');
       link.href = url;
-      link.download = `work-experiences-${new Date().toISOString().split('T')[0]}.json`;
+      link.download = `voca-experiences-${new Date().toISOString().split('T')[0]}.json`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
