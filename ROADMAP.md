@@ -31,18 +31,18 @@ A welcoming, privacy-conscious career workspace for students, graduates, experie
 ## Roadmap
 
 ### Phase 0 — Rebrand, product foundations, quality baseline
-- [ ] Adopt Voca identity across the app and docs.
+- [x] Adopt Voca identity across the app and docs.
 - [ ] Audit routes, components, persistence, dependencies, accessibility.
-- [ ] Establish browser/device support, performance budgets, and CI baseline.
+- [ ] Establish browser/device support and performance budgets (unit/build/desktop/mobile CI baseline established).
 - [ ] Add accessibility checks and document privacy/data-flow boundaries.
 **Exit:** coherent identity, agreed scope, measurable quality baseline, green CI.
 
 ### Phase 1 — Career profile foundation
-- [ ] Define a versioned canonical career-profile schema.
-- [ ] Migrate existing LocalStorage records without data loss.
-- [ ] Add validation, safe defaults, and migration tests.
+- [x] Define a versioned canonical career-profile schema.
+- [x] Migrate existing LocalStorage records without data loss.
+- [x] Add validation, safe defaults, and migration tests.
 - [ ] Add achievement evidence and skill provenance.
-- [ ] Validate backup/restore; retain legacy data until migration is verified.
+- [x] Validate backup/restore; retain legacy data until migration is verified.
 **Exit:** one validated source of truth; existing users retain data; backup/restore tested.
 
 ### Phase 2 — Resume import and document engine
@@ -100,6 +100,18 @@ A welcoming, privacy-conscious career workspace for students, graduates, experie
 - [ ] Threat-model optional encrypted sync before adding accounts/cloud storage.
 - [ ] Define retention, export, and deletion controls before cloud profiles.
 **Exit:** accessible, localisation-ready product and privacy-reviewed optional sync path.
+
+## Paperkit-aligned contributor and privacy safeguards
+
+- [x] No mandatory login, accounts or paid API for Voca's core functionality.
+- [x] MIT-licensed public repository with the same contributor-approval and owner-bypass main ruleset as Paperkit.
+- [x] Preserve user-owned browser persistence for the career profile; no hosted resume storage.
+- [x] Document Paperkit-aligned privacy, open-source contribution standards and security reporting.
+- [x] Provide bug/feature templates and a PR review checklist.
+- [x] Add a separate dependency-security audit workflow that uploads reports for review.
+- [ ] Add complete local-data deletion across canonical, legacy and job-match keys with regression tests.
+- [ ] Add reviewed local resume file validation/processing lifecycle before PDF/DOCX/TXT import.
+- [ ] Add CI-tested linting and explicit dependency-license checks.
 
 ## Delivery strategy
 - Small, reviewable PRs; no unrelated refactors bundled together.
