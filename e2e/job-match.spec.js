@@ -12,7 +12,7 @@ const seedProfile = async (page) => {
 
 test.describe('Job Match browser regression', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('./job-match', { waitUntil: 'domcontentloaded' });
+    await page.goto('./#/job-match', { waitUntil: 'domcontentloaded' });
     await expect(page.getByRole('heading', { name: 'Job Match' })).toBeVisible();
     await seedProfile(page);
     await page.reload({ waitUntil: 'domcontentloaded' });
