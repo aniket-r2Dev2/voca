@@ -183,4 +183,44 @@ test.describe('Resume Builder browser regression', () => {
     await expect(preview(page).getByText('Updated Candidate')).toBeVisible();
   });
 
+
+  test('full backup can be downloaded, previewed and restored safely', async ({ page }, testInfo) => {
+    test.skip(testInfo.project.name !== 'chromium-desktop', 'Desktop-only backup workflow');
+    await addProfile(page);
+
+    const downloadPromise = page.waitForEvent('download');
+    await page.getByRole('button', { name: 'Download Full Backup' }).click();
+    const download = await downloadPromise;
+    expect(download.suggestedFilename()).toMatch(/^voca-career-backup-\d{4}-\d{2}-\d{2}\.json$/);
+    const fs = require('fs');
+    const backup = JSON.parse(fs.readFileSync(await download.path(), 'utf8'));
+    expect(backup.careerProfile.profile.fullName).toBe(profile.fullName);
+
+    await page.getByRole('button', { name: 'Edit Profile' }).click();
+    await page.getByLabel('Full Name').fill('Temporarily Changed');
+    await page.getByRole('button', { name: 'Save Profile' }).click();
+    await expect(preview(page).getByText('Temporarily Changed')).toBeVisible();
+
+    const restoreInput = page.getByLabel('Choose Voca backup file');
+    await restoreInput.setInputFiles({
+      name: 'bad.json',
+      mimeType: 'application/json',
+      buffer: Buffer.from('{broken')
+    });
+    await expect(page.getByRole('alert')).toContainText('not valid JSON');
+    await expect(preview(page).getByText('Temporarily Changed')).toBeVisible();
+
+    await restoreInput.setInputFiles({
+      name: 'backup.json',
+      mimeType: 'application/json',
+      buffer: Buffer.from(JSON.stringify(backup))
+    });
+    await expect(page.getByText('Review backup before replacing your data')).toBeVisible();
+    page.once('dialog', (dialog) => dialog.accept());
+    await page.getByRole('button', { name: 'Confirm Restore' }).click();
+    await expect(preview(page).getByText(profile.fullName)).toBeVisible();
+    await page.reload({ waitUntil: 'domcontentloaded' });
+    await expect(preview(page).getByText(profile.fullName)).toBeVisible();
+  });
+
 });
