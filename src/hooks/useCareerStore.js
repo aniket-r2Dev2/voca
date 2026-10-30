@@ -4,6 +4,7 @@ import {
   reconcileLegacyCareerProfile,
   saveCareerProfile
 } from '../utils/careerProfile';
+import { restoreCareerBackup } from '../utils/careerBackup';
 
 const CHANGE_EVENT = 'voca:career-profile-changed';
 
@@ -51,7 +52,20 @@ const useCareerStore = () => {
     }
   }, []);
 
-  return { careerProfile, write };
+  const restore = useCallback((candidate) => {
+    try {
+      const saved = restoreCareerBackup(getStorage(), candidate);
+      setCareerProfile(saved);
+      window.dispatchEvent(new Event(CHANGE_EVENT));
+      return true;
+    } catch (error) {
+      console.error('Failed to restore Voca career profile:', error);
+      window.alert('Restore failed. Your existing career profile was not intentionally changed.');
+      return false;
+    }
+  }, []);
+
+  return { careerProfile, write, restore };
 };
 
 export default useCareerStore;
