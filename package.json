@@ -2,7 +2,7 @@
   "name": "voca",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://aniket-r2dev2.github.io/work-exp-app",
+  "homepage": "https://aniket-r2dev2.github.io/voca",
   "dependencies": {
     "@testing-library/jest-dom": "^6.7.0",
     "@testing-library/react": "^16.3.0",
