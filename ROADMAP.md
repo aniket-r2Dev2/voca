@@ -38,8 +38,8 @@ A welcoming, privacy-conscious career workspace for students, graduates, experie
 **Exit:** coherent identity, agreed scope, measurable quality baseline, green CI.
 
 ### Phase 1 — Career profile foundation
-- [ ] Define a versioned canonical career-profile schema.
-- [ ] Migrate existing LocalStorage records without data loss.
+- [x] Define a versioned canonical career-profile schema.
+- [x] Add an idempotent first-pass migration from existing LocalStorage records without deleting legacy keys.
 - [ ] Add validation, safe defaults, and migration tests.
 - [ ] Add achievement evidence and skill provenance.
 - [ ] Validate backup/restore; retain legacy data until migration is verified.
