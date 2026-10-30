@@ -6,10 +6,16 @@ import Resume from './pages/Resume';
 import JobMatch from './pages/JobMatch';
 import { migrateLegacyCareerProfile } from './utils/careerProfile';
 
+const getBrowserStorage = () => {
+  try {
+    return typeof window !== 'undefined' ? window.localStorage : null;
+  } catch (error) {
+    return null;
+  }
+};
+
 const App = () => {
-  const [profileBootstrap] = useState(() => (
-    migrateLegacyCareerProfile(typeof window !== 'undefined' ? window.localStorage : null)
-  ));
+  const [profileBootstrap] = useState(() => migrateLegacyCareerProfile(getBrowserStorage()));
 
   return (
     <Router basename="/work-exp-app">
