@@ -1,10 +1,12 @@
 import { useCallback, useEffect, useState } from 'react';
 import {
   CAREER_PROFILE_STORAGE_KEY,
+  createEmptyCareerProfile,
   reconcileLegacyCareerProfile,
   saveCareerProfile
 } from '../utils/careerProfile';
 import { restoreCareerBackup } from '../utils/careerBackup';
+import { hasStoredCareerData } from '../utils/localDataPrivacy';
 
 const CHANGE_EVENT = 'voca:career-profile-changed';
 
@@ -16,7 +18,11 @@ const getStorage = () => {
   }
 };
 
-const readCareerProfile = () => reconcileLegacyCareerProfile(getStorage()).profile;
+const readCareerProfile = () => {
+  const storage = getStorage();
+  if (storage && !hasStoredCareerData(storage)) return createEmptyCareerProfile();
+  return reconcileLegacyCareerProfile(storage).profile;
+};
 
 /**
  * All editors use this hook to read and update the same versioned profile.

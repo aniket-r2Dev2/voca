@@ -46,4 +46,19 @@ test.describe('Job Match browser regression', () => {
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth + 1)).toBeTruthy();
     await page.screenshot({ path: testInfo.outputPath('job-match-mobile.png'), fullPage: true });
   });
+
+  test('does not recreate empty job-match storage on load or after clear', async ({ page }) => {
+    await page.evaluate(() => localStorage.removeItem('job_match_data'));
+    await page.reload({ waitUntil: 'domcontentloaded' });
+    expect(await page.evaluate(() => localStorage.getItem('job_match_data'))).toBeNull();
+
+    await page.getByLabel('Job description').fill(jobDescription);
+    expect(await page.evaluate(() => JSON.parse(localStorage.getItem('job_match_data')).jobDescription)).toBe(jobDescription);
+
+    await page.getByRole('button', { name: 'Clear', exact: true }).click();
+    expect(await page.evaluate(() => localStorage.getItem('job_match_data'))).toBeNull();
+    await page.reload({ waitUntil: 'domcontentloaded' });
+    expect(await page.evaluate(() => localStorage.getItem('job_match_data'))).toBeNull();
+  });
+
 });
