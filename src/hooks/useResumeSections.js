@@ -1,49 +1,38 @@
-import { useEffect, useState } from 'react';
+import useCareerStore from './useCareerStore';
 
-const STORAGE_KEY = 'resume_sections_data';
-
-const DEFAULT_DATA = {
+const EMPTY_SECTIONS = {
   education: [],
   certifications: [],
   projects: []
 };
 
-const normalize = (data) => ({
-  education: Array.isArray(data?.education) ? data.education : [],
-  certifications: Array.isArray(data?.certifications) ? data.certifications : [],
-  projects: Array.isArray(data?.projects) ? data.projects : []
-});
-
 const useResumeSections = () => {
-  const [sections, setSections] = useState(DEFAULT_DATA);
+  const { careerProfile, write } = useCareerStore();
+  const sections = careerProfile || EMPTY_SECTIONS;
 
-  useEffect(() => {
-    try {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      if (stored) setSections(normalize(JSON.parse(stored)));
-    } catch (error) {
-      console.error('Failed to load resume sections:', error);
-    }
-  }, []);
+  const updateSections = (updates) => write((current) => ({
+    ...current,
+    ...Object.fromEntries(
+      Object.entries(updates)
+        .filter(([key]) => Object.prototype.hasOwnProperty.call(EMPTY_SECTIONS, key))
+        .map(([key, value]) => [key, Array.isArray(value) ? value : []])
+    )
+  }));
 
-  useEffect(() => {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(sections));
-    } catch (error) {
-      console.error('Failed to save resume sections:', error);
-    }
-  }, [sections]);
+  const clearSections = () => write((current) => ({
+    ...current,
+    education: [],
+    certifications: [],
+    projects: []
+  }));
 
-  const updateSections = (updates) => {
-    setSections((current) => ({ ...current, ...updates }));
+  return {
+    education: sections.education,
+    certifications: sections.certifications,
+    projects: sections.projects,
+    updateSections,
+    clearSections
   };
-
-  const clearSections = () => {
-    setSections(DEFAULT_DATA);
-    localStorage.removeItem(STORAGE_KEY);
-  };
-
-  return { ...sections, updateSections, clearSections };
 };
 
 export default useResumeSections;
