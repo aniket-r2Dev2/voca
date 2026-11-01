@@ -23,6 +23,8 @@ test("review, edit, confirm, reload and export an imported resume", async ({
   page,
 }) => {
   const before = await stored(page);
+  await page.getByRole('button', { name: 'Add Profile Info', exact: true }).first().click();
+  await page.getByLabel('Full Name', { exact: true }).fill('Unsaved old editor');
   await upload(page);
   await expect(page.getByLabel("Import name", { exact: true })).toHaveValue(
     "Alex Import",
@@ -33,11 +35,17 @@ test("review, edit, confirm, reload and export an imported resume", async ({
   page.once("dialog", (dialog) => dialog.accept());
   await page.getByRole("button", { name: "Confirm Resume Import" }).click();
   await expect(page.getByRole("status")).toContainText("Resume imported");
+  await expect(page.getByLabel('Full Name', { exact: true })).toHaveCount(0);
   await page.reload();
   const preview = page.getByTestId("resume-preview");
   await expect(preview).toContainText("Alex Reviewed");
   await expect(preview).toContainText("Reviewed Company");
   await expect(preview).toContainText("Example University");
+  for (const template of ['Classic', 'Modern', 'Minimal']) {
+    await page.getByRole('button', { name: new RegExp(`^${template}`) }).click();
+    await expect(preview).not.toContainText('0 months');
+    await expect(preview).toContainText('Reviewed Company');
+  }
   const download = page.waitForEvent("download");
   await page.getByRole("button", { name: "Download PDF", exact: true }).click();
   expect((await download).suggestedFilename()).toMatch(

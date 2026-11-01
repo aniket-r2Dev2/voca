@@ -39,6 +39,15 @@ const Resume = () => {
   const currentTemplate = TEMPLATES.find((template) => template.id === selectedTemplate) || TEMPLATES[0];
   const TemplateComponent = currentTemplate.component;
 
+  const handleResumeImport = (candidate) => {
+    if (!restore(candidate)) return false;
+    // Discard editors based on the previous profile after a confirmed replacement.
+    setShowProfileForm(false);
+    setShowSectionsForm(false);
+    setBackupPreview(null);
+    return true;
+  };
+
   const handleProfileUpdate = (updatedProfile) => { if (updateProfile(updatedProfile)) setShowProfileForm(false); };
   const handlePrint = useReactToPrint({ content: () => resumeRef.current, documentTitle: `Resume_${profile.fullName || 'MyResume'}` });
 
@@ -141,7 +150,7 @@ const Resume = () => {
           {hasProfile && <><Button onClick={handleDownloadPDF} variant="primary" disabled={isExporting}><Download className="w-4 h-4 mr-2" />{isExporting ? 'Generating PDF...' : 'Download PDF'}</Button><Button onClick={handlePrint} variant="secondary"><Printer className="w-4 h-4 mr-2" />Print</Button></>}
         </div>
 
-        <ResumeImport current={careerProfile} onSave={restore} onBackup={downloadCareerBackup} />
+        <ResumeImport current={careerProfile} onSave={handleResumeImport} onBackup={downloadCareerBackup} />
 
         {showProfileForm && <ProfileForm profile={profile} onUpdate={handleProfileUpdate} onCancel={() => setShowProfileForm(false)} />}
         {showSectionsForm && <ResumeSectionsForm education={education} certifications={certifications} projects={projects} onChange={(key, value) => updateSections({ [key]: value })} />}
