@@ -1,127 +1,180 @@
-# Voca — Product Vision & Roadmap
+# Voca — Job-tailored Resume Roadmap
 
-> **Tagline:** Your career, clearly organised. Your next move, better prepared.
+Updated: 2026-11-01. This replaces the previous broad career-workspace delivery order.
 
-## Vision
-A welcoming, privacy-conscious career workspace for students, graduates, experienced professionals, career changers, freelancers, and people returning to work — across industries, countries, devices, and levels of technical confidence.
+> Upload your resume. Paste the job description. Use your AI. Review the changes. Download your tailored resume.
 
-## Product principles
-1. Useful before sign-up: core workflows work without an account.
-2. User owns their data: transparent storage, export, deletion, and no sale of career data.
-3. Truth over keyword gaming: never invent qualifications, skills, employers, dates, metrics, or outcomes.
-4. Explainable assistance: show why suggestions were made and what evidence supports them.
-5. Accessible by default: keyboard, screen-reader, contrast, reduced-motion, and mobile-first support.
-6. Global by design: locale-aware dates, paper sizes, terminology, and language-ready UI.
-7. No artificial paywalls: creating and exporting a usable resume remains in the free core.
-8. Progressive complexity: simple onboarding with advanced controls when needed.
-9. Quality is a feature: tests, performance, security, and export reliability are release requirements.
-10. AI is optional: manual and deterministic workflows remain useful without an AI provider.
+## Product goal
 
-## Product scope
-- Career profile: work history, achievements, skills, education, projects, certifications, languages, volunteering.
-- Resume builder, resume import, job-description analysis, tailored versions, cover letters, interview preparation, application tracking.
-- Export, backup, restore, and deletion controls.
+Voca helps a job seeker turn their existing experience into a resume tailored to a specific job, without inventing qualifications or overwriting their original.
+The immediate product is a focused resume-tailoring workflow. Application tracking, interview preparation and broad workspace features are deferred.
 
-### First-release non-goals
-- Auto-applying or submitting forms for users.
-- Predicting hiring outcomes or claiming an authoritative ATS score.
-- Scraping authenticated sites or bypassing platform controls.
-- Mandatory AI, mandatory accounts, or paid downloads.
+## Core workflow
 
-## Roadmap
+1. Upload PDF, DOCX or TXT, or paste resume text.
+2. Review extraction and confirm a source resume.
+3. Paste the job description; optionally enter company and role.
+4. Choose an AI mode and, for automatic mode, a supported provider/model.
+5. Review the data being sent and generate suggested changes.
+6. Compare original and proposed content; accept, reject or edit changes.
+7. Save a separate job-specific version and download PDF or DOCX.
+8. Return later to the original or another version; back up or delete local data.
 
-### Phase 0 — Rebrand, product foundations, quality baseline
-- [x] Adopt Voca identity across the app and docs.
-- [ ] Audit routes, components, persistence, dependencies, accessibility.
-- [ ] Establish browser/device support and performance budgets (unit/build/desktop/mobile CI baseline established).
-- [ ] Add accessibility checks and document privacy/data-flow boundaries.
-**Exit:** coherent identity, agreed scope, measurable quality baseline, green CI.
+Manual editing and existing exports remain usable without AI or a Voca account.
 
-### Phase 1 — Career profile foundation
-- [x] Define a versioned canonical career-profile schema.
-- [x] Migrate existing LocalStorage records without data loss.
-- [x] Add validation, safe defaults, and migration tests.
-- [ ] Add achievement evidence and skill provenance.
-- [x] Validate backup/restore; retain legacy data until migration is verified.
-**Exit:** one validated source of truth; existing users retain data; backup/restore tested.
+## Two AI modes — subscriptions are not API keys
 
-### Phase 2 — Resume import and document engine
-- [x] Import UTF-8 TXT locally (1 MiB limit), with editable review and explicit replacement confirmation.
-- [ ] Import PDF and DOCX with file limits and validation.
-- [x] Extract TXT conservatively, preserving unmapped text for correction before saving.
-- [ ] Extend extraction and review to PDF/DOCX.
-- [ ] Handle malformed/multi-column documents; disclose OCR limitations.
-- [ ] Build reusable data-driven resume renderer.
-- [x] Add selectable-text PDF export with A4/Letter, a single-column layout and explicit unsupported-character errors.
-- [ ] Add editable DOCX export and broader script/font support for text PDFs.
-- [ ] Test A4/Letter, pagination, long names, links, multilingual text.
-**Exit:** manually created or imported profiles render and export reliably.
+### Automatic tailoring: bring your own API key
+- Users supply access to their own provider API account; provider usage/credits are billed under that account.
+- OpenAI, Anthropic and Google Gemini are target integrations, delivered one at a time.
+- Start with one verified adapter (OpenAI proposed), then Anthropic, then Gemini.
+- Add an advanced OpenAI-compatible endpoint option only after endpoint, authentication, model and structured-output compatibility tests. Do not advertise support for every AI service.
+- Provider/model selection must reflect actual supported capabilities and access, not a frozen list of model names.
+- Voca does not charge for creating, reviewing or downloading a resume; AI providers may charge for requests.
+- ChatGPT or Claude chat subscriptions are not credentials Voca can consume. API setup and billing are separate; any eligible plan credits must be checked with the provider.
 
-### Phase 3 — Resume builder redesign
-- [ ] Improve onboarding and information architecture.
-- [ ] Add section reorder, visibility controls, and writing guidance.
-- [ ] Offer ATS-conscious and expressive templates.
-- [ ] Add live preview, accessible controls, and independent resume versions.
-**Exit:** new users can create, edit, preview, download on desktop and mobile.
+### Manual handoff: use an existing chat account
+- Prepare a bounded prompt containing only user-approved source details, the JD and a structured output contract.
+- User explicitly copies it into ChatGPT, Claude or another chat tool, then pastes the response back into Voca.
+- Validate the response and use the same change-review flow as API output.
+- This is a manual workflow subject to the chat service's limits, not an automatic subscription integration.
+- Never collect chat passwords, session cookies or subscription tokens; do not automate authenticated chat UIs.
 
-### Phase 4 — Explainable job intelligence
-- [ ] Parse responsibilities, must-haves, nice-to-haves, seniority, location.
-- [ ] Match structured career evidence, not keyword presence alone.
-- [ ] Explain matched, partial, missing, and unverified requirements.
-- [ ] Keep scoring deterministic and transparent; no hiring prediction claims.
-- [ ] Test technical and non-technical roles at varied seniority.
-**Exit:** useful, explainable analysis without AI.
+Official billing references (checked 2026-11-01):
+- https://help.openai.com/en/articles/9039756-managing-billing-for-chatgpt-and-the-api-platform
+- https://support.claude.com/en/articles/9876003-why-is-claude-api-usage-billed-separately-from-my-paid-claude-plan
 
-### Phase 5 — Optional AI-assisted tailoring
-- [ ] Define provider-neutral adapter and strict structured output schema.
-- [ ] Start with one provider plus mocked tests; add others behind same contract.
-- [ ] Use user-supplied keys without persisting by default.
-- [ ] Disclose exactly what data is sent before each provider request.
-- [ ] Ground rewrites in source evidence and retain provenance.
-- [ ] Show diffs; require explicit approval for every change.
-- [ ] Reject unsupported claims; provide cancellation, timeout, retry, error handling.
-**Exit:** AI improves wording without inventing facts or overwriting source profile.
+## Where we are now
 
-### Phase 6 — Application workspace
-- [ ] Track company, role, URL, status, dates, notes, contacts.
-- [ ] Link applications to exact resume/cover-letter versions.
-- [ ] Add reminders, timeline, and data export.
-**Exit:** users can track applications through outcome without losing context.
+Verified against main at 64cd95b (PR #27 merged).
 
-### Phase 7 — Career preparation
-- [ ] Evidence-grounded cover letters.
-- [ ] Role-specific interview questions.
-- [ ] STAR/CAR story bank from approved achievements.
-- [ ] Practice notes and self-review.
-**Exit:** preparation tools without false guarantees or fabricated stories.
+| Area | Existing capability | Work still needed |
+| --- | --- | --- |
+| Career data | Canonical profile, migration, browser persistence | Immutable source snapshots and job-specific versions |
+| Import | Local UTF-8 TXT up to 1 MiB; editable review and confirmation | PDF/DOCX extraction, paste-text input, richer mapping |
+| Resume builder | Manual editing and three visual templates | A focused upload/JD/tailor/review/download workspace |
+| Export | Visual PDF; selectable-text PDF with A4/Letter | Editable DOCX, broader script/font support, version-specific export |
+| Matching | Basic deterministic job matching | Structured JD requirements and evidence-linked tailoring |
+| AI | No automatic AI tailoring or provider connection shipped | Adapters, transport, credentials, consent, structured output and review |
+| Data controls | JSON backup/restore and complete local deletion | Include versions/JDs; always exclude credentials |
+| Quality | Unit/build/desktop/mobile CI; Pages deployment smoke check | Import, AI failures, factual constraints and end-to-end tailored-output tests |
 
-### Phase 8 — Global readiness and optional sync
-- [ ] Internationalisation foundations and translation workflow.
-- [ ] Locale-aware dates, phone numbers, paper sizes, resume conventions.
-- [ ] WCAG 2.2 AA review of critical journeys.
-- [ ] PWA/offline support where reliable.
-- [ ] Threat-model optional encrypted sync before adding accounts/cloud storage.
-- [ ] Define retention, export, and deletion controls before cloud profiles.
-**Exit:** accessible, localisation-ready product and privacy-reviewed optional sync path.
+Text PDF currently supports Western European text and explicitly rejects unsupported characters; visual PDF remains available.
+Existing audit reporting is not a clean security bill: dependency remediation remains tracked in #23.
 
-## Paperkit-aligned contributor and privacy safeguards
+## Preserve, modify and add
 
-- [x] No mandatory login, accounts or paid API for Voca's core functionality.
-- [x] MIT-licensed public repository with the same contributor-approval and owner-bypass main ruleset as Paperkit.
-- [x] Preserve user-owned browser persistence for the career profile; no hosted resume storage.
-- [x] Document Paperkit-aligned privacy, open-source contribution standards and security reporting.
-- [x] Provide bug/feature templates and a PR review checklist.
-- [x] Add a separate dependency-security audit workflow that uploads reports for review.
-- [x] Add complete local-data deletion across canonical, legacy and job-match keys with regression tests.
-- [x] Add reviewed local TXT validation/processing lifecycle; discard temporary text on cancel, save or navigation.
-- [ ] Extend reviewed validation to PDF/DOCX.
-- [ ] Add CI-tested linting and explicit dependency-license checks.
+### Preserve
+- Canonical career data, existing migration and recovery paths.
+- TXT import validation/review, current editors and PDF exports.
+- Free core, no mandatory Voca login, user-controlled local storage, backup and deletion.
+- MIT/open-source contribution standards and CI/deployment verification.
 
-## Delivery strategy
-- Small, reviewable PRs; no unrelated refactors bundled together.
-- Unit tests for logic and browser coverage for important user journeys.
-- CI must pass before merge; deployment only from the default branch.
-- Ship useful vertical slices; update roadmap and link issues/PRs to phases.
+### Modify
+- Make the primary journey "Tailor my resume", rather than several disconnected career tools.
+- Reuse import review but import into a working source draft; replacement of the master remains a separate explicit action.
+- Pass a selected resume/version to previews and exports instead of always reading the master profile.
+- Expand backup and deletion to cover versions and JDs with backward-compatible migrations.
+- Explain local processing versus external AI requests accurately; never say all data stays on-device when cloud AI is enabled.
+- Move minimal JD analysis, evidence mapping and versioning ahead of cosmetic redesign.
 
-## Current baseline
-The repository already includes experience tracking, a three-template resume builder, LocalStorage persistence and import/export, deterministic job matching, Jest tests, Playwright tests, and GitHub Pages deployment. Build on these capabilities rather than replacing them wholesale.
+### Add
+- A Tailor workspace with source resume, JD, generation status and resumable drafts.
+- A version schema: source snapshot/revision, JD, company/role, approved content, change decisions, provider/model metadata and timestamps.
+- Provider-neutral request/result contract and an independently tested transport.
+- Change review with before/after content, reason, source references and unsupported-requirement warnings.
+- Manual prompt handoff and validated response import.
+- DOCX/PDF imports and editable DOCX export.
+
+## Delivery order and acceptance criteria
+
+### M1 — Source + JD workspace and safe versioning (next build-ready task)
+- [ ] Create a Tailor route with existing profile, TXT import and paste-text entry points.
+- [ ] Capture JD and optional company/role; validate empty and oversized input.
+- [ ] Create immutable source snapshots and separate job-specific drafts.
+- [ ] Define the structured proposal contract and change decisions using mocked fixtures before adding paid API calls.
+- [ ] Preview/export a selected version through existing PDF utilities.
+- [ ] Migrate backup/restore/deletion to include drafts, JDs and versions without losing existing profiles.
+**Acceptance:** user can prepare a source + JD draft, edit it, reload and export it without changing the master. Cancelled/failed writes preserve existing data. Old backups still restore. No provider request occurs.
+
+Likely affected: src/App.js, a new src/pages/Tailor.js, new tailoring components/hooks/schema utilities, src/hooks/useCareerStore.js, src/utils/careerBackup.js, src/utils/localDataPrivacy.js, src/pages/Resume.js and export utilities. Final paths are implementation decisions.
+
+### M2 — Practical resume inputs
+- [ ] Add local DOCX extraction first, then text-based PDF extraction, into the same source-review flow.
+- [ ] Establish byte/page/uncompressed-size limits, timeouts, cancellation and worker processing where necessary.
+- [ ] Review parser dependencies, licenses and advisories before adoption.
+- [ ] Reject corrupt, encrypted and unsupported files with useful recovery guidance.
+- [ ] Preserve uncertain text, warn about tables/multiple columns and require user review.
+- [ ] Detect scanned/image-only PDFs and explain that OCR is not included in the first release.
+**Acceptance:** normal DOCX/PDF resumes produce editable source drafts; malformed files, cancelled parsing and storage failures do not overwrite data. Import alone makes no external request.
+
+### M3 — Provider connection and first complete tailoring flow
+- [ ] Complete a transport/security decision before implementing browser credential entry.
+- [ ] Implement one provider adapter against a common contract, with mocked CI and an explicit opt-in live smoke test.
+- [ ] Add provider/model selection, connection testing and clear API-account/billing guidance.
+- [ ] Show the actual provider destination and approved resume/JD payload before generation; exclude contact details by default where not needed.
+- [ ] Show request limits and estimated usage/cost when reliable; label estimates and provide token/output caps.
+- [ ] Handle invalid keys, unavailable models, rate limits, quota, cancellation, timeout, malformed output and network failure.
+- [ ] No automatic paid retry loops; require an explicit retry and disclose possible additional charges.
+**Acceptance:** a user can generate a draft proposal with their own API access, see where their data goes, cancel, and recover from errors without losing the source. Keys never enter logs, analytics, backups or browser persistence.
+
+### M4 — Trustworthy review, manual handoff and additional providers
+- [ ] Rewrite summary/bullets and prioritize supported skills/experience using the source and JD.
+- [ ] Include source entry IDs and an explanation for each suggested change.
+- [ ] Lock employer names, titles, dates, credentials and numerical claims unless the user explicitly edits the underlying source.
+- [ ] Reject unknown source references and prohibited fact changes; flag unsupported JD requirements instead of inserting them.
+- [ ] Treat resume/JD text and returned output as untrusted data; never execute instructions, HTML or tool calls from them.
+- [ ] Validate schema/size and show accept/reject/edit controls before any proposal becomes an approved version.
+- [ ] Add manual prompt export + response paste with the same validation; bind responses to the correct source/JD revision and reject stale responses.
+- [ ] Add Anthropic and Gemini adapters after each passes the same contract and failure tests.
+- [ ] Add compatible endpoints only with explicit endpoint-specific credential selection; never forward one provider's key to another destination.
+**Acceptance:** upload/source + JD -> API or manual handoff -> review -> save separate version -> PDF works on desktop/mobile. Unsupported facts cannot be silently applied. Automated checks reduce risk but do not guarantee truth; user review is mandatory.
+
+### M5 — Application-ready downloads and release quality
+- [ ] Add editable DOCX export from approved versions.
+- [ ] Broaden text-PDF font/script support; test non-Latin names and multilingual content.
+- [ ] Verify reading order, links, long text, pagination and A4/Letter.
+- [ ] Finish accessible keyboard/mobile states, progress, error recovery and empty-state guidance.
+- [ ] Add deterministic provider fixtures, adversarial JD/resume fixtures and end-to-end extraction-to-download tests.
+- [ ] Add linting, dependency-license checks and continue security remediation.
+**Acceptance:** approved versions export without silent text loss, original data stays intact, unsupported cases are explained, and latest-head required checks plus post-merge deployment checks pass.
+
+M3 must include a minimal M4 review gate in its first user-visible slice. Never ship a generate-and-overwrite shortcut while waiting for the full review UI.
+
+## AI architecture and privacy boundary
+
+The current hosted product is a static GitHub Pages app. It cannot itself hold server secrets or run a backend.
+Do not assume every provider permits secure browser-origin API calls or shares the same authentication/CORS behavior.
+
+Planned default for automatic BYOK:
+- A user-controlled local/self-hosted companion gateway, with provider keys stored in its environment/secret configuration and never bundled into the frontend.
+- Verify provider SDK guidance and transport support during M3; record the decision and setup requirements.
+- Restrict allowed origins, authenticate companion requests, bind local listeners safely, and use HTTPS for remote deployments.
+- Keep arbitrary endpoint access out of the public gateway: use destination validation/allowlists and private-network protections where applicable.
+- Frontend gets non-secret provider/model configuration; keys stay out of LocalStorage, sessionStorage, IndexedDB, URLs, exported files, service-worker caches and telemetry.
+- A managed relay would be a separate architecture change requiring explicit disclosure, authenticated access, abuse/rate controls and a documented retention policy. It is not implied by "no login" or "no hosted resume storage".
+- The static hosted app retains manual handoff and local editing/export, so users without a gateway can still use their own chat service.
+
+Only approved source fields and the JD go to the selected AI endpoint. Voca must disclose that provider retention/training policies apply and must not promise zero retention without evidence.
+Changing provider/endpoint clears connection state. No hidden fallback to another provider.
+
+## Deferred until the core tailoring workflow is reliable
+
+- Application tracker, reminders and automatic job saving.
+- Cover letters, interview practice and STAR story bank.
+- LinkedIn optimisation, browser extension and auto-apply.
+- Major visual-template redesign and advanced section customisation.
+- Accounts, hosted profile storage and cross-device sync.
+- OCR for scanned resumes and broad internationalisation.
+
+Accessibility, security fixes and preventing data loss are ongoing requirements, not deferred polish.
+
+## Delivery rules
+
+- Small reviewable PRs, each with one useful vertical slice and explicit acceptance criteria.
+- Preserve working functionality and migration compatibility; do not replace the app wholesale.
+- Unit and desktop/mobile browser coverage for critical journeys; provider CI uses mocks, never real user keys.
+- Validate latest-head checks before merge and the deployed default branch after merge.
+- Update this roadmap and tracking issue #12 together as milestones land.
+- No unsupported ATS-score or hiring-outcome guarantees.
+- No Voca paywall on editing/export; external provider charges remain the user's responsibility.
