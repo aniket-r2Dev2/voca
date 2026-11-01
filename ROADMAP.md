@@ -46,8 +46,10 @@ A welcoming, privacy-conscious career workspace for students, graduates, experie
 **Exit:** one validated source of truth; existing users retain data; backup/restore tested.
 
 ### Phase 2 — Resume import and document engine
-- [ ] Import PDF, DOCX, TXT with file limits and validation.
-- [ ] Extract locally where feasible; show preview and correction UI.
+- [x] Import UTF-8 TXT locally (1 MiB limit), with editable review and explicit replacement confirmation.
+- [ ] Import PDF and DOCX with file limits and validation.
+- [x] Extract TXT conservatively, preserving unmapped text for correction before saving.
+- [ ] Extend extraction and review to PDF/DOCX.
 - [ ] Handle malformed/multi-column documents; disclose OCR limitations.
 - [ ] Build reusable data-driven resume renderer.
 - [ ] Add editable DOCX and selectable-text PDF exports.
@@ -109,8 +111,9 @@ A welcoming, privacy-conscious career workspace for students, graduates, experie
 - [x] Document Paperkit-aligned privacy, open-source contribution standards and security reporting.
 - [x] Provide bug/feature templates and a PR review checklist.
 - [x] Add a separate dependency-security audit workflow that uploads reports for review.
-- [ ] Add complete local-data deletion across canonical, legacy and job-match keys with regression tests.
-- [ ] Add reviewed local resume file validation/processing lifecycle before PDF/DOCX/TXT import.
+- [x] Add complete local-data deletion across canonical, legacy and job-match keys with regression tests.
+- [x] Add reviewed local TXT validation/processing lifecycle; discard temporary text on cancel, save or navigation.
+- [ ] Extend reviewed validation to PDF/DOCX.
 - [ ] Add CI-tested linting and explicit dependency-license checks.
 
 ## Delivery strategy

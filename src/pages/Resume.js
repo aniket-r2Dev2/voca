@@ -12,6 +12,7 @@ import ClassicTemplate from '../components/resume/templates/ClassicTemplateV2';
 import ModernTemplate from '../components/resume/templates/ModernTemplateV2';
 import MinimalTemplate from '../components/resume/templates/MinimalTemplate';
 import Button from '../components/common/Button';
+import ResumeImport from '../components/resume/ResumeImport';
 import useCareerStore from '../hooks/useCareerStore';
 import { CAREER_BACKUP_MAX_BYTES, createCareerBackup, parseCareerBackup } from '../utils/careerBackup';
 import { deleteAllVocaLocalData } from '../utils/localDataPrivacy';
@@ -139,6 +140,8 @@ const Resume = () => {
           <Button onClick={() => setShowSectionsForm((value) => !value)} variant={showSectionsForm ? 'secondary' : 'primary'}><Layout className="w-4 h-4 mr-2" />{showSectionsForm ? 'Hide Resume Sections' : 'Add Resume Sections'}</Button>
           {hasProfile && <><Button onClick={handleDownloadPDF} variant="primary" disabled={isExporting}><Download className="w-4 h-4 mr-2" />{isExporting ? 'Generating PDF...' : 'Download PDF'}</Button><Button onClick={handlePrint} variant="secondary"><Printer className="w-4 h-4 mr-2" />Print</Button></>}
         </div>
+
+        <ResumeImport current={careerProfile} onSave={restore} onBackup={downloadCareerBackup} />
 
         {showProfileForm && <ProfileForm profile={profile} onUpdate={handleProfileUpdate} onCancel={() => setShowProfileForm(false)} />}
         {showSectionsForm && <ResumeSectionsForm education={education} certifications={certifications} projects={projects} onChange={(key, value) => updateSections({ [key]: value })} />}
