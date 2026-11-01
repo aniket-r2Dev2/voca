@@ -97,7 +97,7 @@ const ModernTemplate = React.forwardRef(({ profile, experiences, education = [],
                           {exp.company}
                         </div>
                       </div>
-                      <div className="text-right text-sm text-gray-600">
+                      {exp.startDate && (exp.current || exp.endDate) && <div className="text-right text-sm text-gray-600">
                         <div className="flex items-center">
                           <Calendar className="w-4 h-4 mr-1" />
                           {formatDate(exp.startDate)} - {exp.current ? 'Present' : formatDate(exp.endDate)}
@@ -105,7 +105,7 @@ const ModernTemplate = React.forwardRef(({ profile, experiences, education = [],
                         <div className="font-medium text-blue-600 mt-1">
                           {calculateDuration(exp.startDate, exp.endDate, exp.current)}
                         </div>
-                      </div>
+                      </div>}
                     </div>
                     {exp.location && (
                       <div className="flex items-center text-gray-600 text-sm mt-1">

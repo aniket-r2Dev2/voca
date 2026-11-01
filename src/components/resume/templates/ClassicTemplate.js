@@ -106,12 +106,12 @@ const ClassicTemplate = React.forwardRef(({ profile, experiences, education = []
                       </span>
                     )}
                   </div>
-                  <div className="flex items-center text-sm text-gray-600 mt-1">
+                  {exp.startDate && (exp.current || exp.endDate) && <div className="flex items-center text-sm text-gray-600 mt-1">
                     <Calendar className="w-4 h-4 mr-1" />
                     {formatDate(exp.startDate)} - {exp.current ? 'Present' : formatDate(exp.endDate)}
                     <span className="mx-2">•</span>
                     {calculateDuration(exp.startDate, exp.endDate, exp.current)}
-                  </div>
+                  </div>}
                 </div>
 
                 {exp.description && (
