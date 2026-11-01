@@ -147,13 +147,15 @@ The current hosted product is a static GitHub Pages app. It cannot itself hold s
 Do not assume every provider permits secure browser-origin API calls or shares the same authentication/CORS behavior.
 
 Planned default for automatic BYOK:
-- A user-controlled local/self-hosted companion gateway, with provider keys stored in its environment/secret configuration and never bundled into the frontend.
+- A small server-side relay for the hosted product so users can select a provider, enter an API key and generate without installing software. This is new backend work, not a capability of GitHub Pages.
+- User-entered keys remain in frontend memory only until cleared/navigation; send only over HTTPS to the explicitly disclosed relay. The relay uses them only for the request, never stores them, and redacts authorization headers, request bodies and errors from logs/APM. Never embed a shared provider key in the frontend.
+- Offer a user-controlled local/self-hosted gateway as an alternative; its keys may come from user-managed environment/secret configuration.
 - Verify provider SDK guidance and transport support during M3; record the decision and setup requirements.
-- Restrict allowed origins, authenticate companion requests, bind local listeners safely, and use HTTPS for remote deployments.
+- Preserve no mandatory Voca account where feasible using short-lived request/session authorization, strict origin controls, rate limits and abuse controls. CORS alone is not authentication. Self-hosted/local listeners also need authentication and safe binding.
 - Keep arbitrary endpoint access out of the public gateway: use destination validation/allowlists and private-network protections where applicable.
-- Frontend gets non-secret provider/model configuration; keys stay out of LocalStorage, sessionStorage, IndexedDB, URLs, exported files, service-worker caches and telemetry.
-- A managed relay would be a separate architecture change requiring explicit disclosure, authenticated access, abuse/rate controls and a documented retention policy. It is not implied by "no login" or "no hosted resume storage".
-- The static hosted app retains manual handoff and local editing/export, so users without a gateway can still use their own chat service.
+- Keep keys out of LocalStorage, sessionStorage, IndexedDB, URLs, exported files, service-worker caches and telemetry; memory-only input is still sensitive to frontend XSS, so review dependencies, CSP and third-party scripts.
+- Before a managed relay ships, verify hosting cost, provider terms, request authentication, abuse/rate controls, secret redaction, request-size limits and retention behavior. Resume/JD content and credentials pass through it transiently; disclose this explicitly and do not claim the data stays on-device. No persistent resume/key database is planned. If those release gates cannot be met, keep automatic mode unavailable and offer manual handoff/self-hosting instead.
+- The static hosted app retains manual handoff and local editing/export when the relay is unavailable. Any hosting expenses are Voca operating costs, separate from the user's provider charges.
 
 Only approved source fields and the JD go to the selected AI endpoint. Voca must disclose that provider retention/training policies apply and must not promise zero retention without evidence.
 Changing provider/endpoint clears connection state. No hidden fallback to another provider.
