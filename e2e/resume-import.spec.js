@@ -24,7 +24,7 @@ test("review, edit, confirm, reload and export an imported resume", async ({
 }) => {
   const before = await stored(page);
   await page.getByRole('button', { name: 'Add Profile Info', exact: true }).first().click();
-  await page.getByLabel('Full Name', { exact: true }).fill('Unsaved old editor');
+  await page.getByLabel('Full Name').fill('Unsaved old editor');
   await upload(page);
   await expect(page.getByLabel("Import name", { exact: true })).toHaveValue(
     "Alex Import",
@@ -35,7 +35,7 @@ test("review, edit, confirm, reload and export an imported resume", async ({
   page.once("dialog", (dialog) => dialog.accept());
   await page.getByRole("button", { name: "Confirm Resume Import" }).click();
   await expect(page.getByRole("status")).toContainText("Resume imported");
-  await expect(page.getByLabel('Full Name', { exact: true })).toHaveCount(0);
+  await expect(page.getByLabel('Full Name')).toHaveCount(0);
   await page.reload();
   const preview = page.getByTestId("resume-preview");
   await expect(preview).toContainText("Alex Reviewed");
@@ -52,7 +52,7 @@ test("review, edit, confirm, reload and export an imported resume", async ({
     /Resume_Alex Reviewed.*\.pdf$/,
   );
   await page.getByRole("button", { name: "Edit Profile", exact: true }).click();
-  await expect(page.getByLabel("Full Name", { exact: true })).toHaveValue(
+  await expect(page.getByLabel("Full Name")).toHaveValue(
     "Alex Reviewed",
   );
 });
