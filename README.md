@@ -263,3 +263,11 @@ On Resume, choose a UTF-8 `.txt` file up to 1 MiB. Voca processes it locally wit
 The conservative parser recognizes labelled contact fields (`Name:`, `Email:`, `Phone:`, `Headline:`, `Location:`), summary headings, and blank-line-separated experience/education entries headed `Role | Company` / `Degree | Institution`. Dates are not inferred. Unknown text stays editable and is included in the summary by default; the original text is visible for reference during review. Correct the draft before confirming.
 
 Selecting or cancelling never saves the draft. Confirmation replaces the entire career profile, including collections absent from the import; download a full backup first. Storage failure preserves the previous profile and keeps the draft open for retry. Temporary source text is discarded on cancel, successful save or navigation; only reviewed career fields are persisted. Imported resumes use the existing editor, templates and PDF download (currently image-based).
+
+## Selectable-text PDF export
+
+Resume offers **Download Text PDF** with A4 or Letter paper. It builds searchable/copyable text directly from the career profile in a simple single-column layout, with wrapping, page breaks and page numbers. This layout is independent of the selected visual template. Processing is local, with no font download, server, login or new npm dependency.
+
+The initial text exporter supports Western European text using standard PDF fonts. Unsupported scripts/emoji produce an actionable error before download; saved data is unchanged. Use the existing **Download PDF** for visual templates and other scripts. Editable DOCX and broader script support remain future work. The exporter rejects content over 200,000 characters instead of truncating it. Dates are shown as provided, and unknown dates are not invented.
+
+Browser tests validate actual extracted PDF text and paper dimensions with Poppler (`pdftotext`, `pdfinfo`); install `poppler-utils` before running the browser suite locally. CI installs it automatically.
