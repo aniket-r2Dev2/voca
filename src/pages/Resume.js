@@ -16,6 +16,7 @@ import ResumeImport from '../components/resume/ResumeImport';
 import useCareerStore from '../hooks/useCareerStore';
 import { CAREER_BACKUP_MAX_BYTES, createCareerBackup, parseCareerBackup } from '../utils/careerBackup';
 import { deleteAllVocaLocalData } from '../utils/localDataPrivacy';
+import { createResumeTextPdf } from '../utils/resumeTextPdf';
 
 const TEMPLATES = [
   { id: 'classic', name: 'Classic', description: 'Traditional serif design', component: ClassicTemplate },
@@ -34,6 +35,8 @@ const Resume = () => {
   const [showSectionsForm, setShowSectionsForm] = useState(false);
   const [selectedTemplate, setSelectedTemplate] = useState('classic');
   const [isExporting, setIsExporting] = useState(false);
+  const [textPdfError, setTextPdfError] = useState('');
+  const [paperSize, setPaperSize] = useState('a4');
   const resumeRef = useRef(null);
   const hasProfile = Boolean(profile.fullName || profile.email);
   const currentTemplate = TEMPLATES.find((template) => template.id === selectedTemplate) || TEMPLATES[0];
@@ -50,6 +53,16 @@ const Resume = () => {
 
   const handleProfileUpdate = (updatedProfile) => { if (updateProfile(updatedProfile)) setShowProfileForm(false); };
   const handlePrint = useReactToPrint({ content: () => resumeRef.current, documentTitle: `Resume_${profile.fullName || 'MyResume'}` });
+
+  const handleDownloadTextPdf = () => {
+    setTextPdfError('');
+    try {
+      const pdf = createResumeTextPdf(careerProfile, { paperSize });
+      pdf.save(`Resume_${(profile.fullName || 'MyResume').replace(/[^a-zA-Z0-9 _-]/g, '_')}_text_${paperSize}.pdf`);
+    } catch (error) {
+      setTextPdfError(error.message || 'Could not export text PDF. Try Download PDF for the visual version.');
+    }
+  };
 
   const handleDownloadPDF = async () => {
     if (!resumeRef.current) return;
@@ -149,6 +162,16 @@ const Resume = () => {
           <Button onClick={() => setShowSectionsForm((value) => !value)} variant={showSectionsForm ? 'secondary' : 'primary'}><Layout className="w-4 h-4 mr-2" />{showSectionsForm ? 'Hide Resume Sections' : 'Add Resume Sections'}</Button>
           {hasProfile && <><Button onClick={handleDownloadPDF} variant="primary" disabled={isExporting}><Download className="w-4 h-4 mr-2" />{isExporting ? 'Generating PDF...' : 'Download PDF'}</Button><Button onClick={handlePrint} variant="secondary"><Printer className="w-4 h-4 mr-2" />Print</Button></>}
         </div>
+
+        {hasProfile && <section aria-label="Selectable text PDF export" className="mb-8 rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-700 dark:bg-slate-800 text-gray-800 dark:text-gray-100">
+          <h2 className="text-lg font-semibold">Download a selectable-text PDF</h2>
+          <p className="my-2 text-sm">Searchable, copyable text in a clean single-column layout, independent of the selected visual template. Free and generated on this device. Supports Western European text; use Download PDF above for other scripts or the visual design.</p>
+          <div className="flex flex-wrap items-end gap-4">
+            <label className="block text-sm font-medium">Text PDF paper size<select value={paperSize} onChange={(event) => setPaperSize(event.target.value)} className="mt-1 block rounded border border-gray-300 bg-white p-2 text-gray-900 dark:bg-slate-900 dark:text-gray-100"><option value="a4">A4</option><option value="letter">Letter</option></select></label>
+            <Button onClick={handleDownloadTextPdf}>Download Text PDF</Button>
+          </div>
+          {textPdfError && <p role="alert" className="mt-3 text-sm text-red-700 dark:text-red-300">{textPdfError}</p>}
+        </section>}
 
         <ResumeImport current={careerProfile} onSave={handleResumeImport} onBackup={downloadCareerBackup} />
 

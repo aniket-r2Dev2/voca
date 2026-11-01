@@ -52,7 +52,8 @@ A welcoming, privacy-conscious career workspace for students, graduates, experie
 - [ ] Extend extraction and review to PDF/DOCX.
 - [ ] Handle malformed/multi-column documents; disclose OCR limitations.
 - [ ] Build reusable data-driven resume renderer.
-- [ ] Add editable DOCX and selectable-text PDF exports.
+- [x] Add selectable-text PDF export with A4/Letter, a single-column layout and explicit unsupported-character errors.
+- [ ] Add editable DOCX export and broader script/font support for text PDFs.
 - [ ] Test A4/Letter, pagination, long names, links, multilingual text.
 **Exit:** manually created or imported profiles render and export reliably.
 
