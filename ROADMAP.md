@@ -89,8 +89,8 @@ Existing audit reporting is not a clean security bill: dependency remediation re
 ## Delivery order and acceptance criteria
 
 ### M1 — Source + JD workspace and safe versioning (next build-ready task)
-- [ ] Create a Tailor route with existing profile, TXT import and paste-text entry points.
-- [ ] Capture JD and optional company/role; validate empty and oversized input.
+- [x] Create a Tailor route with existing profile, TXT import and paste-text entry points.
+- [x] Capture JD and optional company/role; validate empty and oversized input.
 - [ ] Create immutable source snapshots and separate job-specific drafts.
 - [ ] Define the structured proposal contract and change decisions using mocked fixtures before adding paid API calls.
 - [ ] Preview/export a selected version through existing PDF utilities.
