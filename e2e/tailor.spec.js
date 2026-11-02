@@ -21,3 +21,25 @@ test('review a job-specific resume and export without writing to the master prof
   await page.getByRole('button', { name: 'Discard draft and edit inputs' }).click();
   await expect(page.getByLabel('Resume text')).toHaveValue('Name: Alex\nSummary\nBuilds tools.');
 });
+
+test('save, reopen and delete a draft after reloading', async ({ page }) => {
+  await page.goto('./#/tailor');
+  await page.getByLabel('Paste text or open a TXT file').check();
+  await page.getByLabel('Resume text').fill('Name: Alex\nSummary\nOriginal.');
+  await page.getByLabel('Role (optional)').fill('Backend Engineer');
+  await page.getByLabel('Job description').fill('Build reliable services.');
+  await page.getByRole('button', { name: 'Review draft' }).click();
+  await page.getByLabel('Edit draft summary').fill('Edited copy.');
+  await page.getByRole('button', { name: 'Save draft' }).click();
+  await expect(page.getByRole('status')).toContainText('saved');
+  await page.reload();
+  await page.getByRole('button', { name: 'Backend Engineer' }).click();
+  await expect(page.getByLabel('Edit draft summary')).toHaveValue('Edited copy.');
+  await page.getByText('Original resume', { exact: true }).click();
+  await expect(page.getByText('Original.', { exact: true })).toBeVisible();
+  await page.getByRole('button', { name: 'Back to saved drafts' }).click();
+  page.once('dialog', dialog => dialog.accept());
+  await page.getByRole('button', { name: 'Delete', exact: true }).click();
+  await page.reload();
+  await expect(page.getByRole('heading', { name: 'Saved drafts' })).toHaveCount(0);
+});

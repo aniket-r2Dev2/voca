@@ -91,10 +91,10 @@ Existing audit reporting is not a clean security bill: dependency remediation re
 ### M1 — Source + JD workspace and safe versioning (next build-ready task)
 - [x] Create a Tailor route with existing profile, TXT import and paste-text entry points.
 - [x] Capture JD and optional company/role; validate empty and oversized input.
-- [ ] Create immutable source snapshots and separate job-specific drafts.
+- [x] Create immutable source snapshots and separate job-specific drafts.
 - [ ] Define the structured proposal contract and change decisions using mocked fixtures before adding paid API calls.
-- [ ] Preview/export a selected version through existing PDF utilities.
-- [ ] Migrate backup/restore/deletion to include drafts, JDs and versions without losing existing profiles.
+- [x] Preview/export a selected version through existing PDF utilities.
+- [x] Migrate backup/restore/deletion to include drafts, JDs and versions without losing existing profiles.
 **Acceptance:** user can prepare a source + JD draft, edit it, reload and export it without changing the master. Cancelled/failed writes preserve existing data. Old backups still restore. No provider request occurs.
 
 Likely affected: src/App.js, a new src/pages/Tailor.js, new tailoring components/hooks/schema utilities, src/hooks/useCareerStore.js, src/utils/careerBackup.js, src/utils/localDataPrivacy.js, src/pages/Resume.js and export utilities. Final paths are implementation decisions.

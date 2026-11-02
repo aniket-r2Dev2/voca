@@ -45,7 +45,7 @@ const useCareerStore = () => {
     };
   }, []);
 
-  const write = useCallback((change) => {
+  const write = useCallback((change, onError) => {
     try {
       const saved = saveCareerProfile(getStorage(), change);
       setCareerProfile(saved);
@@ -53,14 +53,22 @@ const useCareerStore = () => {
       return true;
     } catch (error) {
       console.error('Failed to save Voca career profile:', error);
-      window.alert('Could not save your changes. Your existing data was not overwritten. Please export a backup and check browser storage.');
+      if (onError) onError(error);
+      else window.alert('Could not save your changes. Your existing data was not overwritten. Please export a backup and check browser storage.');
       return false;
     }
   }, []);
 
-  const restore = useCallback((candidate) => {
+  const restore = useCallback((candidate, { preserveDrafts = false } = {}) => {
     try {
-      const saved = restoreCareerBackup(getStorage(), candidate);
+      const storage = getStorage();
+      let replacement = candidate;
+      if (preserveDrafts) {
+        const raw = storage.getItem(CAREER_PROFILE_STORAGE_KEY);
+        const drafts = raw && JSON.parse(raw).tailorDrafts;
+        if (drafts) replacement = { ...candidate, tailorDrafts: drafts };
+      }
+      const saved = restoreCareerBackup(storage, replacement);
       setCareerProfile(saved);
       window.dispatchEvent(new Event(CHANGE_EVENT));
       return true;
