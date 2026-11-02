@@ -1,5 +1,7 @@
 import { isCareerProfile } from './careerProfile';
 
+import { validProposal } from './summaryProposal';
+
 export const JD_LIMIT = 30000;
 
 export function sourceSnapshot(profile) {
@@ -27,7 +29,7 @@ export function validDrafts(drafts) {
     return Number.isSafeInteger(draft.revision) && draft.revision > 0
       && typeof draft.createdAt === 'string' && typeof draft.updatedAt === 'string'
       && typeof draft.summary === 'string' && isCareerProfile(draft.source)
-      && draft.source.tailorDrafts === undefined
+      && draft.source.tailorDrafts === undefined && validProposal(draft.proposal, draft.source)
       && typeof draft.job?.description === 'string' && Boolean(draft.job.description.trim())
       && draft.job.description.length <= JD_LIMIT
       && ['role', 'company'].every(key => typeof draft.job[key] === 'string' && draft.job[key].length <= 180);
@@ -47,6 +49,7 @@ export function saveDraft(profile, review, now = new Date().toISOString()) {
     source: previous?.source ?? review.source,
     job: review.job,
     summary: review.version.profile.summary || '',
+    ...(review.proposal && { proposal: review.proposal }),
     createdAt: previous?.createdAt ?? now,
     updatedAt: now
   };
