@@ -23,7 +23,7 @@ test.describe('GitHub Pages deep-link behavior', () => {
 
   test('navigation generates refresh-safe links', async ({ page }) => {
     await page.goto('./', { waitUntil: 'domcontentloaded' });
-    await page.getByRole('link', { name: 'Resume' }).click();
+    await page.getByRole('link', { name: 'Resume', exact: true }).click();
     await expect(page).toHaveURL(/#\/resume$/);
     await page.reload({ waitUntil: 'domcontentloaded' });
     await expect(page.getByRole('heading', { name: 'Resume Builder' })).toBeVisible();
