@@ -43,7 +43,7 @@ const Resume = () => {
   const TemplateComponent = currentTemplate.component;
 
   const handleResumeImport = (candidate) => {
-    if (!restore(candidate)) return false;
+    if (!restore(candidate, { preserveDrafts: true })) return false;
     // Discard editors based on the previous profile after a confirmed replacement.
     setShowProfileForm(false);
     setShowSectionsForm(false);
@@ -114,7 +114,7 @@ const Resume = () => {
     setBackupError('');
     if (!file) return;
     if (file.size > CAREER_BACKUP_MAX_BYTES) {
-      setBackupError('The backup file must be 2 MB or smaller.');
+      setBackupError('The backup file must be 20 MB or smaller.');
       return;
     }
     try {
@@ -128,7 +128,7 @@ const Resume = () => {
   const confirmCareerRestore = () => {
     if (!backupPreview) return;
     const name = backupPreview.profile.fullName || 'this career profile';
-    if (!window.confirm('Replace your current Voca career profile with the backup for ' + name + '? Your current profile, experience and resume sections will be replaced.')) return;
+    if (!window.confirm('Replace your current Voca career profile with the backup for ' + name + '? Your current profile and saved drafts will be replaced. This backup has ' + (backupPreview.tailorDrafts?.length ?? 0) + ' saved drafts.')) return;
     if (restore(backupPreview)) {
       setBackupPreview(null);
       setBackupError('');
@@ -137,7 +137,7 @@ const Resume = () => {
 
   const handleClearAllVocaData = () => {
     const approved = window.confirm(
-      'Delete ALL Voca data saved in this browser? This removes your career profile, work history, resume sections, legacy backups and job matches. This cannot be undone. Download a full backup first if you need one.'
+      'Delete ALL Voca data saved in this browser? This removes your career profile, work history, resume sections, saved drafts, legacy backups and job matches. This cannot be undone. Download a full backup first if you need one.'
     );
     if (!approved) return;
 
@@ -180,11 +180,11 @@ const Resume = () => {
 
         <section aria-label="Career profile backup and restore" className="mb-8 rounded-xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-700 dark:bg-slate-800">
           <h2 className="text-lg font-semibold text-gray-800 dark:text-white">Back up your career profile</h2>
-          <p className="mt-1 mb-4 text-sm text-gray-600 dark:text-gray-300">Download all your career details as JSON, or select a previous Voca backup to review before restoring. Everything stays in your browser.</p>
+          <p className="mt-1 mb-4 text-sm text-gray-600 dark:text-gray-300">Download your career details, saved drafts and their job descriptions as JSON, or select a previous Voca backup to review before restoring. Everything stays in your browser.</p>
           <div className="flex flex-wrap items-center gap-4">
             <Button onClick={downloadCareerBackup} variant="secondary"><Download className="w-4 h-4 mr-2" />Download Full Backup</Button>
             <div>
-              <label htmlFor="voca-career-backup-file" className="block text-sm font-medium text-gray-700 dark:text-gray-200">Restore a Voca JSON backup (max 2 MB)</label>
+              <label htmlFor="voca-career-backup-file" className="block text-sm font-medium text-gray-700 dark:text-gray-200">Restore a Voca JSON backup (max 20 MB)</label>
               <input id="voca-career-backup-file" aria-label="Choose Voca backup file" className="mt-1 block w-full max-w-xs text-sm text-gray-700 dark:text-gray-200" type="file" accept=".json,application/json" onChange={selectCareerBackup} />
             </div>
           </div>
@@ -193,7 +193,7 @@ const Resume = () => {
             <div className="mt-4 rounded-lg border border-amber-300 bg-amber-50 p-4 dark:border-amber-700 dark:bg-amber-950">
               <h3 className="font-semibold text-amber-900 dark:text-amber-100">Review backup before replacing your data</h3>
               <p className="mt-1 text-sm text-amber-900 dark:text-amber-100">
-                {backupPreview.profile.fullName || 'Unnamed profile'} — {backupPreview.experiences.length} experiences, {backupPreview.education.length} education entries, {backupPreview.projects.length} projects.
+                {backupPreview.profile.fullName || 'Unnamed profile'} — {backupPreview.experiences.length} experiences, {backupPreview.education.length} education entries, {backupPreview.projects.length} projects, {backupPreview.tailorDrafts?.length ?? 0} saved drafts.
               </p>
               <div className="mt-3 flex flex-wrap gap-3">
                 <Button onClick={confirmCareerRestore}>Confirm Restore</Button>

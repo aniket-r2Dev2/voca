@@ -1,7 +1,11 @@
 import { CAREER_PROFILE_STORAGE_KEY, isCareerProfile } from './careerProfile';
 
+import { validDrafts } from './tailorDrafts';
+
 export const CAREER_BACKUP_FORMAT = 'voca-career-profile-backup';
-export const CAREER_BACKUP_MAX_BYTES = 2 * 1024 * 1024;
+
+// Covers a full browser storage quota, including multibyte resume text.
+export const CAREER_BACKUP_MAX_BYTES = 20 * 1024 * 1024;
 
 const validateRecord = (profile) => {
   if (!isCareerProfile(profile)
@@ -9,6 +13,7 @@ const validateRecord = (profile) => {
       || typeof profile.metadata.updatedAt !== 'string') {
     throw new Error('This backup contains an unsupported or invalid career profile.');
   }
+  if (!validDrafts(profile.tailorDrafts)) throw new Error('The backup contains invalid saved drafts.');
   return profile;
 };
 
@@ -17,14 +22,14 @@ export const createCareerBackup = (
   exportedAt = new Date().toISOString()
 ) => JSON.stringify({
   format: CAREER_BACKUP_FORMAT,
-  backupVersion: 1,
+  backupVersion: profile.tailorDrafts ? 2 : 1,
   exportedAt,
   careerProfile: validateRecord(profile)
-}, null, 2);
+});
 
 export const parseCareerBackup = (content) => {
-  if (typeof content !== 'string' || content.length > CAREER_BACKUP_MAX_BYTES) {
-    throw new Error('The backup must be a JSON file no larger than 2 MB.');
+  if (typeof content !== 'string' || new Blob([content]).size > CAREER_BACKUP_MAX_BYTES) {
+    throw new Error('The backup must be a JSON file no larger than 20 MB.');
   }
   let parsed;
   try {
@@ -32,7 +37,7 @@ export const parseCareerBackup = (content) => {
   } catch {
     throw new Error('The selected file is not valid JSON.');
   }
-  if (!parsed || parsed.format !== CAREER_BACKUP_FORMAT || parsed.backupVersion !== 1) {
+  if (!parsed || parsed.format !== CAREER_BACKUP_FORMAT || !(parsed.backupVersion === 1 || (parsed.backupVersion === 2 && Array.isArray(parsed.careerProfile?.tailorDrafts)))) {
     throw new Error('This is not a supported Voca career-profile backup.');
   }
   return validateRecord(parsed.careerProfile);

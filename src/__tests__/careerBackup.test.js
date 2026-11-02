@@ -53,8 +53,8 @@ describe('career-profile backup', () => {
     }))).toThrow('invalid career profile');
   });
 
-  test('rejects backups larger than the 2 MB limit', () => {
-    expect(() => parseCareerBackup('a'.repeat(CAREER_BACKUP_MAX_BYTES + 1))).toThrow('2 MB');
+  test('rejects backups larger than the 20 MB limit', () => {
+    expect(() => parseCareerBackup('a'.repeat(CAREER_BACKUP_MAX_BYTES + 1))).toThrow('20 MB');
   });
 
   test('restores exact profile sections while leaving legacy records untouched', () => {
