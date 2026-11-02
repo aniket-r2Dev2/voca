@@ -43,3 +43,26 @@ test('save, reopen and delete a draft after reloading', async ({ page }) => {
   await page.reload();
   await expect(page.getByRole('heading', { name: 'Saved drafts' })).toHaveCount(0);
 });
+
+test('review a sample, save custom wording, and export only the approved summary', async ({ page }) => {
+  await page.goto('./#/tailor');
+  await page.getByLabel('Paste text or open a TXT file').check();
+  await page.getByLabel('Resume text').fill('Name: Alex\nSummary\nBuilds software. Maintains identity services.');
+  await page.getByLabel('Job description').fill('Maintain identity services.');
+  await page.getByRole('button', { name: 'Review draft' }).click();
+  await page.getByRole('button', { name: 'Try sample suggestion' }).click();
+  await expect(page.getByLabel('Edit draft summary')).toHaveValue('Builds software. Maintains identity services.');
+  await page.getByRole('button', { name: 'Edit suggestion' }).click();
+  await page.getByLabel('Your wording').fill('Maintains identity services for users.');
+  await page.getByRole('button', { name: 'Apply my wording' }).click();
+  await page.getByRole('button', { name: 'Save draft' }).click();
+  await page.reload();
+  await page.getByRole('button', { name: 'Maintain identity services.' }).click();
+  await expect(page.getByText(/Decision: edited/)).toBeVisible();
+  const pending = page.waitForEvent('download');
+  await page.getByRole('button', { name: 'Download draft PDF' }).click();
+  const path = await (await pending).path();
+  const pdfText = require('child_process').execFileSync('pdftotext', [path, '-'], { encoding: 'utf8' });
+  expect(pdfText).toContain('Maintains identity services for users.');
+  expect(pdfText).not.toContain('Builds software.');
+});
