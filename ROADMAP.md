@@ -100,7 +100,8 @@ Existing audit reporting is not a clean security bill: dependency remediation re
 Likely affected: src/App.js, a new src/pages/Tailor.js, new tailoring components/hooks/schema utilities, src/hooks/useCareerStore.js, src/utils/careerBackup.js, src/utils/localDataPrivacy.js, src/pages/Resume.js and export utilities. Final paths are implementation decisions.
 
 ### M2 — Practical resume inputs (next build-ready task)
-- [ ] Add local DOCX extraction first, then text-based PDF extraction, into the same source-review flow.
+- [x] Add local DOCX extraction to the editable Tailor source-review flow.
+- [ ] Add local text-based PDF extraction to the same flow.
 - [ ] Establish byte/page/uncompressed-size limits, timeouts, cancellation and worker processing where necessary.
 - [ ] Review parser dependencies, licenses and advisories before adoption.
 - [ ] Reject corrupt, encrypted and unsupported files with useful recovery guidance.
