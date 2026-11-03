@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import useCareerStore from '../hooks/useCareerStore';
 import { parseResumeText, readResumeFile, RESUME_IMPORT_MAX_BYTES } from '../utils/resumeImport';
 import { createResumeTextPdf, resumeTextBlocks } from '../utils/resumeTextPdf';
@@ -16,6 +16,8 @@ export default function Tailor() {
   const [mode, setMode] = useState('profile');
   const [text, setText] = useState('');
   const [loading, setLoading] = useState(false);
+  const activeImport = useRef(null);
+  useEffect(() => () => activeImport.current?.abort(), []);
   const [job, setJob] = useState({ description: '', company: '', role: '' });
   const [review, setReview] = useState(null);
   const [error, setError] = useState('');
@@ -49,15 +51,29 @@ export default function Tailor() {
 
   async function importFile(file) {
     if (!file) return;
+    activeImport.current?.abort();
+    const controller = new AbortController();
+    activeImport.current = controller;
     setLoading(true);
+    setNotice('');
     setError('');
     try {
-      const result = await readResumeFile(file);
-      setText(result.source);
+      const isWord = /\.docx$/i.test(file.name);
+      if (!isWord && !/\.txt$/i.test(file.name)) throw new Error('Choose a TXT or DOCX file, or paste your resume text.');
+      const source = isWord
+        ? await (await import('../utils/docxImport')).readDocxFile(file, controller.signal)
+        : (await readResumeFile(file)).source;
+      if (controller.signal.aborted) return;
+      setText(source);
+      if (isWord) setNotice('Review the extracted body text below. Check the order of tables and columns, and add any details from headers, footers or text boxes.');
+
     } catch (err) {
-      setError(err.message);
+      if (!controller.signal.aborted) setError(err.message);
     } finally {
-      setLoading(false);
+      if (activeImport.current === controller) {
+        activeImport.current = null;
+        setLoading(false);
+      }
     }
   }
 
@@ -71,7 +87,7 @@ export default function Tailor() {
         const { draft, remaining } = parseResumeText(text);
         source = { ...draft, profile: { ...draft.profile, summary: [draft.profile.summary, remaining].filter(Boolean).join('\n\n') } };
       }
-      if (!source || !resumeTextBlocks(source).length) throw new Error('Your profile is empty. Paste a resume or choose a TXT file.');
+      if (!source || !resumeTextBlocks(source).length) throw new Error('Your profile is empty. Paste a resume or choose a TXT or DOCX file.');
       if (!job.description.trim() || job.description.length > JD_LIMIT) throw new Error('Enter a job description of up to 30,000 characters.');
       source = sourceSnapshot(source);
       setNotice('');
@@ -109,12 +125,13 @@ export default function Tailor() {
       <fieldset disabled={loading} className="space-y-3">
         <legend className="text-lg font-semibold">Source resume</legend>
         <label className="block"><input type="radio" checked={mode === 'profile'} onChange={() => setMode('profile')} /> Use my Voca profile</label>
-        <label className="block"><input type="radio" checked={mode === 'text'} onChange={() => setMode('text')} /> Paste text or open a TXT file</label>
+        <label className="block"><input type="radio" checked={mode === 'text'} onChange={() => setMode('text')} /> Paste text or open a TXT or DOCX file</label>
         {mode === 'text' && <>
-          <label className="block">Open UTF-8 TXT (up to 1 MiB)<input className={field} type="file" accept=".txt,text/plain" onChange={e => { const file = e.target.files[0]; e.target.value = ''; importFile(file); }} /></label>
+          <label className="block">Open TXT (1 MiB) or DOCX (5 MiB)<input className={field} type="file" accept=".txt,.docx,text/plain,application/vnd.openxmlformats-officedocument.wordprocessingml.document" onChange={e => { const file = e.target.files[0]; e.target.value = ''; importFile(file); }} /></label>
           <label className="block">Resume text<textarea className={field} rows={8} value={text} onChange={e => setText(e.target.value)} /></label>
         </>}
       </fieldset>
+      {loading && <button type="button" className="underline" onClick={() => activeImport.current?.abort()}>Cancel import</button>}
       <label className="block">Job description<textarea className={field} rows={6} value={job.description} onChange={e => setJob({ ...job, description: e.target.value })} /></label>
       <div className="grid gap-3 sm:grid-cols-2">
         {['company', 'role'].map(key => <label key={key} className="capitalize">{key} (optional)<input className={field} maxLength={180} value={job[key]} onChange={e => setJob({ ...job, [key]: e.target.value })} /></label>)}
