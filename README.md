@@ -274,7 +274,7 @@ Voca uses zip.js 2.24.0 (BSD-3-Clause) in a cancellable local worker. Import rea
 
 Open a PDF up to 5 MiB and 30 pages, review the extracted text, then enter the job description. Voca uses a local PDF.js worker with a 15-second timeout and a 1 MiB extracted-text limit. Check the order of columns and tables. Pages without selectable text are identified so you can add missing details. For image-only scans, run OCR first or paste the resume text. Password-protected documents require an unlocked copy.
 
-PDF.js 5.6.205 (Apache-2.0) is pinned for Node 20 compatibility. The build ships its reader, worker, fonts, character maps and license on the same origin. Import reads the supplied file locally and extracts text without rendering pages.
+PDF.js 6.5.438 (Apache-2.0) is pinned and built with Node 24. The build ships its reader, worker, fonts, character maps and license on the same origin. Import reads the supplied file locally and extracts text without rendering pages.
 
 ## Selectable-text PDF export
 
