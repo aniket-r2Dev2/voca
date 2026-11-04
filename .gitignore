@@ -44,3 +44,4 @@ dotenv*
 
 # gh-pages branch artifacts
 .gh-pages/
+/public/pdf-reader/

@@ -99,14 +99,14 @@ Existing audit reporting is not a clean security bill: dependency remediation re
 
 Likely affected: src/App.js, a new src/pages/Tailor.js, new tailoring components/hooks/schema utilities, src/hooks/useCareerStore.js, src/utils/careerBackup.js, src/utils/localDataPrivacy.js, src/pages/Resume.js and export utilities. Final paths are implementation decisions.
 
-### M2 — Practical resume inputs (next build-ready task)
+### M2 — Practical resume inputs (complete)
 - [x] Add local DOCX extraction to the editable Tailor source-review flow.
-- [ ] Add local text-based PDF extraction to the same flow.
-- [ ] Establish byte/page/uncompressed-size limits, timeouts, cancellation and worker processing where necessary.
-- [ ] Review parser dependencies, licenses and advisories before adoption.
-- [ ] Reject corrupt, encrypted and unsupported files with useful recovery guidance.
-- [ ] Preserve uncertain text, warn about tables/multiple columns and require user review.
-- [ ] Detect scanned/image-only PDFs and explain that OCR is not included in the first release.
+- [x] Add local text-based PDF extraction to the same flow.
+- [x] Establish byte/page/uncompressed-size limits, timeouts, cancellation and worker processing where necessary.
+- [x] Review parser dependencies, licenses and advisories before adoption.
+- [x] Reject corrupt, encrypted and unsupported files with useful recovery guidance.
+- [x] Preserve uncertain text, warn about tables/multiple columns and require user review.
+- [x] Detect scanned/image-only PDFs and explain that OCR is not included in the first release.
 **Acceptance:** normal DOCX/PDF resumes produce editable source drafts; malformed files, cancelled parsing and storage failures do not overwrite data. Import alone makes no external request.
 
 ### M3 — Provider connection and first complete tailoring flow
