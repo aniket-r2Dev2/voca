@@ -12,8 +12,8 @@ async function documentFile() {
 
 test('open a compressed Word resume, correct it, and recover from a failed replacement', async ({ page }) => {
   await page.goto('./#/tailor');
-  await page.getByLabel('Paste text or open a TXT or DOCX file').check();
-  const file = page.getByLabel('Open TXT (1 MiB) or DOCX (5 MiB)');
+  await page.getByLabel('Paste text or open a TXT, DOCX or PDF file').check();
+  const file = page.getByLabel('Open TXT (1 MiB), DOCX or PDF (5 MiB)');
   await file.setInputFiles({ name: 'resume.docx', mimeType, buffer: await documentFile() });
   const editor = page.getByLabel('Resume text');
   await expect(editor).toHaveValue('Name: Alex\nBuilt developer tools.');

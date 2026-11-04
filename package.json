@@ -13,6 +13,7 @@
     "html2canvas": "^1.4.1",
     "jspdf": "4.2.1",
     "lucide-react": "0.539.0",
+    "pdfjs-dist": "5.6.205",
     "react": "19.1.1",
     "react-dom": "19.1.1",
     "react-router-dom": "^6.30.3",
@@ -27,7 +28,9 @@
     "test:e2e": "playwright test",
     "eject": "react-scripts eject",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d build"
+    "deploy": "gh-pages -d build",
+    "prebuild": "node scripts/prepare-pdf-reader.cjs",
+    "prestart": "node scripts/prepare-pdf-reader.cjs"
   },
   "eslintConfig": {
     "extends": [

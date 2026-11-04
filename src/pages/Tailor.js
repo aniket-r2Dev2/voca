@@ -58,15 +58,21 @@ export default function Tailor() {
     setNotice('');
     setError('');
     try {
-      const isWord = /\.docx$/i.test(file.name);
-      if (!isWord && !/\.txt$/i.test(file.name)) throw new Error('Choose a TXT or DOCX file, or paste your resume text.');
-      const source = isWord
-        ? await (await import('../utils/docxImport')).readDocxFile(file, controller.signal)
-        : (await readResumeFile(file)).source;
+      let source;
+      let notice = '';
+      if (/\.pdf$/i.test(file.name)) {
+        ({ source, notice } = await (await import('../utils/pdfImport')).readPdfFile(file, controller.signal));
+      } else if (/\.docx$/i.test(file.name)) {
+        source = await (await import('../utils/docxImport')).readDocxFile(file, controller.signal);
+        notice = 'Review the extracted body text below. Check the order of tables and columns, and add any details from headers, footers or text boxes.';
+      } else if (/\.txt$/i.test(file.name)) {
+        ({ source } = await readResumeFile(file));
+      } else {
+        throw new Error('Choose a TXT, DOCX or PDF file, or paste your resume text.');
+      }
       if (controller.signal.aborted) return;
       setText(source);
-      if (isWord) setNotice('Review the extracted body text below. Check the order of tables and columns, and add any details from headers, footers or text boxes.');
-
+      setNotice(notice);
     } catch (err) {
       if (!controller.signal.aborted) setError(err.message);
     } finally {
@@ -87,7 +93,7 @@ export default function Tailor() {
         const { draft, remaining } = parseResumeText(text);
         source = { ...draft, profile: { ...draft.profile, summary: [draft.profile.summary, remaining].filter(Boolean).join('\n\n') } };
       }
-      if (!source || !resumeTextBlocks(source).length) throw new Error('Your profile is empty. Paste a resume or choose a TXT or DOCX file.');
+      if (!source || !resumeTextBlocks(source).length) throw new Error('Your profile is empty. Paste a resume or choose a TXT, DOCX or PDF file.');
       if (!job.description.trim() || job.description.length > JD_LIMIT) throw new Error('Enter a job description of up to 30,000 characters.');
       source = sourceSnapshot(source);
       setNotice('');
@@ -125,9 +131,9 @@ export default function Tailor() {
       <fieldset disabled={loading} className="space-y-3">
         <legend className="text-lg font-semibold">Source resume</legend>
         <label className="block"><input type="radio" checked={mode === 'profile'} onChange={() => setMode('profile')} /> Use my Voca profile</label>
-        <label className="block"><input type="radio" checked={mode === 'text'} onChange={() => setMode('text')} /> Paste text or open a TXT or DOCX file</label>
+        <label className="block"><input type="radio" checked={mode === 'text'} onChange={() => setMode('text')} /> Paste text or open a TXT, DOCX or PDF file</label>
         {mode === 'text' && <>
-          <label className="block">Open TXT (1 MiB) or DOCX (5 MiB)<input className={field} type="file" accept=".txt,.docx,text/plain,application/vnd.openxmlformats-officedocument.wordprocessingml.document" onChange={e => { const file = e.target.files[0]; e.target.value = ''; importFile(file); }} /></label>
+          <label className="block">Open TXT (1 MiB), DOCX or PDF (5 MiB)<input className={field} type="file" accept=".pdf,application/pdf,.txt,.docx,text/plain,application/vnd.openxmlformats-officedocument.wordprocessingml.document" onChange={e => { const file = e.target.files[0]; e.target.value = ''; importFile(file); }} /></label>
           <label className="block">Resume text<textarea className={field} rows={8} value={text} onChange={e => setText(e.target.value)} /></label>
         </>}
       </fieldset>

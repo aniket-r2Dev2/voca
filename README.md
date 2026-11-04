@@ -266,9 +266,15 @@ Selecting or cancelling never saves the draft. Confirmation replaces the entire 
 
 ## Word resumes in Tailor
 
-Choose a DOCX up to 5 MiB in Tailor, check the extracted text, and paste the job description. Body paragraphs and table contents appear in document order. Review columns and add details from headers, footers, images or text boxes before creating the draft. Password-protected files require an unprotected copy. PDF input is planned separately.
+Choose a DOCX up to 5 MiB in Tailor, check the extracted text, and paste the job description. Body paragraphs and table contents appear in document order. Review columns and add details from headers, footers, images or text boxes before creating the draft. Password-protected files require an unprotected copy. Tailor also accepts text-based PDF resumes.
 
 Voca uses zip.js 2.24.0 (BSD-3-Clause) in a cancellable local worker. Import reads only the content-type manifest and the Word body. Limits are 512 archive entries, 32 MiB declared total expansion, 128 KiB for the manifest, 2 MiB for body XML, 1 MiB of reviewed text, and 10 seconds for archive processing.
+
+## PDF resumes in Tailor
+
+Open a PDF up to 5 MiB and 30 pages, review the extracted text, then enter the job description. Voca uses a local PDF.js worker with a 15-second timeout and a 1 MiB extracted-text limit. Check the order of columns and tables. Pages without selectable text are identified so you can add missing details. For image-only scans, run OCR first or paste the resume text. Password-protected documents require an unlocked copy.
+
+PDF.js 5.6.205 (Apache-2.0) is pinned for Node 20 compatibility. The build ships its reader, worker, fonts, character maps and license on the same origin. Import reads the supplied file locally and extracts text without rendering pages.
 
 ## Selectable-text PDF export
 

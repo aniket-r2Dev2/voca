@@ -3,7 +3,7 @@ const { test, expect } = require('@playwright/test');
 test('review a job-specific resume and export without writing to the master profile', async ({ page }) => {
   await page.goto('./');
   await page.getByRole('link', { name: 'Tailor my resume' }).click();
-  await page.getByLabel('Paste text or open a TXT or DOCX file').check();
+  await page.getByLabel('Paste text or open a TXT, DOCX or PDF file').check();
   await page.getByLabel('Resume text').fill('Name: Alex\nSummary\nBuilds tools.');
   const review = page.getByRole('button', { name: 'Review draft' });
   await review.click();
@@ -24,7 +24,7 @@ test('review a job-specific resume and export without writing to the master prof
 
 test('save, reopen and delete a draft after reloading', async ({ page }) => {
   await page.goto('./#/tailor');
-  await page.getByLabel('Paste text or open a TXT or DOCX file').check();
+  await page.getByLabel('Paste text or open a TXT, DOCX or PDF file').check();
   await page.getByLabel('Resume text').fill('Name: Alex\nSummary\nOriginal.');
   await page.getByLabel('Role (optional)').fill('Backend Engineer');
   await page.getByLabel('Job description').fill('Build reliable services.');
@@ -46,7 +46,7 @@ test('save, reopen and delete a draft after reloading', async ({ page }) => {
 
 test('review a sample, save custom wording, and export only the approved summary', async ({ page }) => {
   await page.goto('./#/tailor');
-  await page.getByLabel('Paste text or open a TXT or DOCX file').check();
+  await page.getByLabel('Paste text or open a TXT, DOCX or PDF file').check();
   await page.getByLabel('Resume text').fill('Name: Alex\nSummary\nBuilds software. Maintains identity services.');
   await page.getByLabel('Job description').fill('Maintain identity services.');
   await page.getByRole('button', { name: 'Review draft' }).click();
