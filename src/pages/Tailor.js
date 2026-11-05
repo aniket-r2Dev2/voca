@@ -5,6 +5,7 @@ import { createResumeTextPdf, resumeTextBlocks } from '../utils/resumeTextPdf';
 
 import { JD_LIMIT, reopenDraft, saveDraft, sourceSnapshot, validDrafts } from '../utils/tailorDrafts';
 
+import AiHandoff from '../components/resume/AiHandoff';
 import SummaryProposal from '../components/resume/SummaryProposal';
 
 const field = 'mt-1 block w-full rounded border border-gray-400 bg-white p-2 dark:bg-slate-800';
@@ -147,7 +148,8 @@ export default function Tailor() {
       <h2 className="text-xl font-semibold">{[review.job.role, review.job.company].filter(Boolean).join(' at ') || 'Job-specific draft'}</h2>
       <details><summary>Job description</summary><p className="whitespace-pre-wrap">{review.job.description}</p></details>
       <label className="block">Edit draft summary<textarea className={field} rows={5} value={review.version.profile.summary || ''} onChange={e => { setNotice(''); setReview({ ...review, version: { ...review.version, profile: { ...review.version.profile, summary: e.target.value } } }); }} /></label>
-      <SummaryProposal key={review.id} review={review} onChange={updated => { setNotice(''); setReview(updated); }} />
+      <AiHandoff key={review.id} review={review} onChange={updated => { setNotice(''); setReview(updated); }} />
+      <SummaryProposal key={review.id + JSON.stringify(review.proposal)} review={review} onChange={updated => { setNotice(''); setReview(updated); }} />
       <details><summary>Original resume</summary>
         {resumeTextBlocks(review.source).map((block, i) => <p className="whitespace-pre-wrap py-1" key={i}>{block.text}</p>)}
       </details>

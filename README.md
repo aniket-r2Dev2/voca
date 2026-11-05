@@ -283,3 +283,9 @@ Resume offers **Download Text PDF** with A4 or Letter paper. It builds searchabl
 The initial text exporter supports Western European text using standard PDF fonts. Unsupported scripts/emoji produce an actionable error before download; saved data is unchanged. Use the existing **Download PDF** for visual templates and other scripts. Editable DOCX and broader script support remain future work. The exporter rejects content over 200,000 characters instead of truncating it. Dates are shown as provided, and unknown dates are not invented.
 
 Browser tests validate actual extracted PDF text and paper dimensions with Poppler (`pdftotext`, `pdfinfo`); install `poppler-utils` before running the browser suite locally. CI installs it automatically.
+
+## Use an AI chat with a Tailor draft
+
+In a draft, select source passages under **Use your AI chat**, prepare and review the prompt, then copy it into your chosen chat service. Paste its JSON response back into Voca and inspect the suggested summary, reason and source evidence before accepting, editing or rejecting it. Save the draft to keep an accepted change.
+
+The prompt includes only selected summary/experience passages and the job description. Check those free-text fields for personal information before copying. The receiving chat service's policies and limits apply. Prompts and pasted responses are temporary; prepare a fresh prompt after leaving the page or changing the draft. Only the reviewed proposal is included when saving a draft. Automatic provider API access still requires the hosted transport work in M3.
