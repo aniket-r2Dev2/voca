@@ -36,7 +36,7 @@ test('save, reopen and delete a draft after reloading', async ({ page }) => {
   await page.getByRole('button', { name: 'Backend Engineer' }).click();
   await expect(page.getByLabel('Edit draft summary')).toHaveValue('Edited copy.');
   await page.getByText('Original resume', { exact: true }).click();
-  await expect(page.getByText('Original.', { exact: true })).toBeVisible();
+  await expect(page.locator('details').filter({ has: page.getByText('Original resume', { exact: true }) }).getByText('Original.', { exact: true })).toBeVisible();
   await page.getByRole('button', { name: 'Back to saved drafts' }).click();
   page.once('dialog', dialog => dialog.accept());
   await page.getByRole('button', { name: 'Delete', exact: true }).click();
