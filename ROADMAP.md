@@ -126,7 +126,8 @@ Likely affected: src/App.js, a new src/pages/Tailor.js, new tailoring components
 - [ ] Reject unknown source references and prohibited fact changes; flag unsupported JD requirements instead of inserting them.
 - [ ] Treat resume/JD text and returned output as untrusted data; never execute instructions, HTML or tool calls from them.
 - [ ] Validate schema/size and show accept/reject/edit controls before any proposal becomes an approved version.
-- [ ] Add manual prompt export + response paste with the same validation; bind responses to the correct source/JD revision and reject stale responses.
+- [x] Add manual summary prompt export + response paste with selected evidence, revision binding and mandatory review. Delivered ahead of M3 while hosted transport remains pending.
+- [ ] Extend manual handoff to experience bullets and skills.
 - [ ] Add Anthropic and Gemini adapters after each passes the same contract and failure tests.
 - [ ] Add compatible endpoints only with explicit endpoint-specific credential selection; never forward one provider's key to another destination.
 **Acceptance:** upload/source + JD -> API or manual handoff -> review -> save separate version -> PDF works on desktop/mobile. Unsupported facts cannot be silently applied. Automated checks reduce risk but do not guarantee truth; user review is mandatory.
