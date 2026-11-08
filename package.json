@@ -30,7 +30,10 @@
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build",
     "prebuild": "node scripts/prepare-pdf-reader.cjs",
-    "prestart": "node scripts/prepare-pdf-reader.cjs"
+    "prestart": "node scripts/prepare-pdf-reader.cjs",
+    "start:relay": "node server/relay.cjs",
+    "test:relay": "node --test server/*.test.cjs",
+    "tailor:api": "node server/client.cjs"
   },
   "eslintConfig": {
     "extends": [
