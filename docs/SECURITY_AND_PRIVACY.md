@@ -51,3 +51,7 @@ Resume offers **Download Text PDF** with A4 or Letter paper. It builds searchabl
 The initial text exporter supports Western European text using standard PDF fonts. Unsupported scripts/emoji produce an actionable error before download; saved data is unchanged. Use the existing **Download PDF** for visual templates and other scripts. Editable DOCX and broader script support remain future work. The exporter rejects content over 200,000 characters instead of truncating it. Dates are shown as provided, and unknown dates are not invented.
 
 Browser tests validate actual extracted PDF text and paper dimensions with Poppler (`pdftotext`, `pdfinfo`); install `poppler-utils` before running the browser suite locally. CI installs it automatically.
+
+## Local provider relay
+
+The optional Node relay and CLI transmit selected source passages and the JD to OpenAI. Keys are request-scoped and are not persisted or logged by the relay. The public static site has no automatic provider connection yet. See [transport decision, limits and setup](PROVIDER_RELAY.md); this loopback-only service is not a public hosting deployment.
