@@ -131,3 +131,13 @@ test('startup fails closed without token, models or local origin', () => {
     assert.throws(() => createRelay({ token, models: ['test-model'], ...options }));
   }
 });
+test('capabilities requires local authentication and makes no provider request', async t => {
+  const { url, calls } = await fixture(t);
+  const endpoint = url.replace('/tailor', '/capabilities');
+  assert.equal((await fetch(endpoint)).status, 401);
+  const reply = await fetch(endpoint, { headers: { Authorization: `Bearer ${token}`, Origin: 'http://localhost:3000' } });
+  assert.equal(reply.status, 200);
+  assert.deepEqual(await reply.json(), { provider: 'openai', models: ['test-model'] });
+  assert.equal(reply.headers.get('cache-control'), 'no-store');
+  assert.equal(calls.length, 0);
+});
