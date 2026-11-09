@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import ApiGeneration from './ApiGeneration';
 import { availableEvidence, prepareHandoff, importHandoff, HANDOFF_LIMIT } from '../../utils/aiHandoff';
 
 export default function AiHandoff({ review, onChange }) {
@@ -58,6 +59,7 @@ export default function AiHandoff({ review, onChange }) {
       <button className="underline" disabled={!fresh} onClick={copy}>Copy reviewed prompt</button>
       <label className="block">AI JSON response<textarea className="block w-full rounded border p-2 dark:bg-slate-800" rows={6} maxLength={HANDOFF_LIMIT} value={response} onChange={event => setResponse(event.target.value)} /></label>
       <button className="underline" disabled={!fresh} onClick={receive}>Review AI response</button>
+      <ApiGeneration key={request.requestId} request={request} review={review} onChange={onChange} />
     </>}
     {message && <p role="status">{message}</p>}
   </section>;

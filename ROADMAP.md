@@ -111,12 +111,12 @@ Likely affected: src/App.js, a new src/pages/Tailor.js, new tailoring components
 
 ### M3 — Provider connection and first complete tailoring flow
 
-First backend slice: [local OpenAI relay and setup](docs/PROVIDER_RELAY.md). Fixed endpoint, request-scoped keys, bounded requests, validated summary output, mocked tests and an explicit opt-in live smoke procedure are implemented. Public hosting, browser credentials and the complete automatic UX remain pending; M3 is not complete.
+First backend slice: [local OpenAI relay and setup](docs/PROVIDER_RELAY.md). Fixed endpoint, request-scoped keys, bounded requests, validated summary output, mocked tests and an explicit opt-in live smoke procedure are implemented. The browser connection flow is implemented for configured relays, including in-memory credentials, model selection, exact payload consent, cancellation and mandatory review. Public hosting and real provider-account verification remain pending; M3 is not complete.
 
 - [ ] Complete a transport/security decision before implementing browser credential entry.
 - [x] Implement the first provider adapter (OpenAI) against the summary proposal contract, with mocked CI and an explicit opt-in live smoke procedure. Live credentials have not been tested.
-- [ ] Add provider/model selection, connection testing and clear API-account/billing guidance.
-- [ ] Show the actual provider destination and approved resume/JD payload before generation; exclude contact details by default where not needed.
+- [x] Add OpenAI model selection, authenticated relay connection testing and API-account/billing guidance. Provider-account access is checked by generation; public activation remains pending.
+- [x] Show the relay/provider destination and approved summary/JD payload before generation; exclude contact fields by default.
 - [ ] Show request limits and estimated usage/cost when reliable; label estimates and provide token/output caps.
 - [ ] Handle invalid keys, unavailable models, rate limits, quota, cancellation, timeout, malformed output and network failure.
 - [ ] No automatic paid retry loops; require an explicit retry and disclose possible additional charges.

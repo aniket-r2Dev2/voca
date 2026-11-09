@@ -21,15 +21,16 @@ function createRelay({ token, models, origin = 'http://localhost:3000', fetchImp
       res.setHeader('Access-Control-Allow-Origin', origin);
       res.setHeader('Vary', 'Origin');
     }
-    if (req.url !== '/api/tailor') return send(404, { error: 'not_found' });
+    if (!['/api/tailor', '/api/capabilities'].includes(req.url)) return send(404, { error: 'not_found' });
     if (req.method === 'OPTIONS') {
-      res.setHeader('Access-Control-Allow-Methods', 'POST');
+      res.setHeader('Access-Control-Allow-Methods', 'GET, POST');
       res.setHeader('Access-Control-Allow-Headers', 'Authorization, Content-Type, X-Provider-Key');
       return send(204, undefined);
     }
-    if (req.method !== 'POST') return send(405, { error: 'method_not_allowed' });
+    if (req.method !== (req.url === '/api/capabilities' ? 'GET' : 'POST')) return send(405, { error: 'method_not_allowed' });
     const authorization = Buffer.from(req.headers.authorization || '');
     if (authorization.length !== expected.length || !timingSafeEqual(authorization, expected)) return send(401, { error: 'unauthorized' });
+    if (req.url === '/api/capabilities') return send(200, { provider: 'openai', models });
     if (!/^application\/json(?:\s*;\s*charset=utf-8)?$/i.test(req.headers['content-type'] || '')) return send(415, { error: 'json_required' });
     const key = req.headers['x-provider-key'];
     if (typeof key !== 'string' || !/^[\x21-\x7e]{10,512}$/.test(key)) return send(400, { error: 'provider_key_required' });

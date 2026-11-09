@@ -68,6 +68,18 @@ Input has exactly `requestId`, `model`, `jobDescription`, `evidence`. Evidence c
 
 For an optional live smoke, prepare a handoff using synthetic resume text and a synthetic JD, then follow the explicit `--send` flow above. Verify the returned request ID, quoted evidence, pending review, acceptance and save/reopen. This requires your own API account and may incur charges. No live paid provider request was executed during this implementation; mocked checks do not establish model availability or account permissions.
 
+## Browser integration
+
+Run the relay as above, then run `npm start` in another terminal and open Voca locally. In Tailor, select evidence and prepare an AI prompt. The API section then lets you enter the relay access token, check the relay, select one of its configured models, and enter your provider API key. Review the displayed JSON payload and check the explicit paid-request consent before generating. The resulting suggestion is pending until you accept/edit/reject it.
+
+The connection check uses authenticated `GET /api/capabilities`. It returns the OpenAI provider identifier and configured model IDs without sending resume text or the provider key to OpenAI. It does **not** verify API billing or provider/model access. Those are checked by the generation request.
+
+The default local relay is `http://127.0.0.1:8787` and accepts `http://localhost:3000`. If you open the frontend on another local port/host, set `VOCA_ORIGIN` to that exact origin before starting the relay. The UI supports cancellation and aborts requests on draft changes/navigation. Credentials stay in component memory, are cleared on draft changes/navigation or with Clear credentials, and never enter the profile or backups. Provider keys are also cleared on successful generation. No automatic retry is made.
+
+For a future reviewed deployment, `REACT_APP_VOCA_RELAY_URL` pins the HTTPS relay origin at build time (no paths, credentials, query strings or fragments). This is a public URL setting, **not a secret**. There is no user-editable endpoint field or fallback to another destination. Loopback HTTP is allowed only from local HTTP pages. The public GitHub Pages build has no relay configured and retains manual handoff. Never put a relay token or provider key in build variables. A hosted adapter must implement the same authenticated capabilities and tailoring routes, CORS and bounded-error contract; the existing loopback server must not simply be exposed publicly.
+
+Browser CI intercepts relay traffic with synthetic fixtures and verifies consent, source preservation, mandatory review, credential non-persistence, cancellation and stale responses on desktop/mobile. No real provider key is used.
+
 ## Next release slice
 
-Select and configure the managed hosting/authentication approach, then add provider/model selection, in-memory key entry, exact payload/destination consent, connection test and cancellation in the UI. Keep manual handoff available. Additional providers follow the same validated proposal contract after the first complete flow is working.
+Select and configure the managed hosting/authentication approach, then activate the implemented browser connection flow against that reviewed HTTPS endpoint. Keep manual handoff available. Additional providers follow the same validated proposal contract after the first complete flow is working.
