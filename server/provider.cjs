@@ -1,3 +1,4 @@
+const { Buffer } = require('node:buffer');
 const ENDPOINT = 'https://api.openai.com/v1/responses';
 const INPUT_BYTES = 50000;
 const OUTPUT_BYTES = 128000;

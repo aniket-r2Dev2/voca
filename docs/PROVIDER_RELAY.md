@@ -83,3 +83,7 @@ Browser CI intercepts relay traffic with synthetic fixtures and verifies consent
 ## Next release slice
 
 Select and configure the managed hosting/authentication approach, then activate the implemented browser connection flow against that reviewed HTTPS endpoint. Keep manual handoff available. Additional providers follow the same validated proposal contract after the first complete flow is working.
+
+## Cloudflare adapter
+
+The selected hosted target now has a separate Worker adapter and deployment workflow. Follow [Cloudflare deployment](CLOUDFLARE_DEPLOYMENT.md). The local Node server remains loopback-only; Cloudflare activation requires account setup and live verification.

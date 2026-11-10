@@ -45,3 +45,9 @@ dotenv*
 # gh-pages branch artifacts
 .gh-pages/
 /public/pdf-reader/
+
+# Worker local credentials and build outputs
+.dev.vars*
+.wrangler/
+worker-dist/
+worker/deploy.json

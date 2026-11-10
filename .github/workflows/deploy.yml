@@ -27,10 +27,17 @@ jobs:
       - name: Run provider relay tests (mocked, no API keys)
         run: npm run test:relay
 
+      - name: Test and bundle Cloudflare relay (no credentials)
+        run: |
+          npm run test:worker
+          npm run build:worker
+
       - name: Run unit tests
         run: npm test -- --coverage --watchAll=false
 
       - name: Build project
+        env:
+          REACT_APP_VOCA_RELAY_URL: ${{ vars.VOCA_RELAY_URL }}
         run: npm run build
 
       - name: Install Playwright Chromium
