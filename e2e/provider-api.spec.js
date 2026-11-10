@@ -13,7 +13,7 @@ async function prepare(page) {
   await page.getByLabel('OpenAI API key', { exact: true }).fill('test-api-secret');
 }
 async function mock(page, generate) {
-  await page.route('http://127.0.0.1:8787/**', async route => {
+  await page.route('**/api/{capabilities,tailor}', async route => {
     const req = route.request();
     const headers = { 'access-control-allow-origin': '*', 'access-control-allow-headers': '*', 'access-control-allow-methods': 'GET, POST, OPTIONS' };
     if (req.method() === 'OPTIONS') return route.fulfill({ status: 204, headers });

@@ -1,0 +1,16 @@
+{
+  "name": "voca-relay",
+  "main": "index.mjs",
+  "compatibility_date": "2026-11-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "workers_dev": true,
+  "preview_urls": false,
+  "observability": { "enabled": false },
+  "vars": {
+    "VOCA_ORIGIN": "https://aniket-r2dev2.github.io",
+    "VOCA_MODELS": ""
+  },
+  "ratelimits": [
+    { "name": "VOCA_RATE_LIMIT", "namespace_id": "36001", "simple": { "limit": 6, "period": 60 } }
+  ]
+}

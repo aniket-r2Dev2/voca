@@ -1,0 +1,47 @@
+name: Deploy Cloudflare relay
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: cloudflare-relay-production
+  cancel-in-progress: false
+jobs:
+  deploy:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: cloudflare
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      VOCA_RELAY_TOKEN: ${{ secrets.VOCA_RELAY_TOKEN }}
+      VOCA_MODELS: ${{ vars.VOCA_MODELS }}
+      WRANGLER_SEND_METRICS: 'false'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Validate deployment configuration
+        run: |
+          node -e 'if (!process.env.CLOUDFLARE_API_TOKEN || !process.env.CLOUDFLARE_ACCOUNT_ID || !/^[A-Za-z0-9_-]{32,256}$/.test(process.env.VOCA_RELAY_TOKEN || "")) process.exit(1)'
+          node worker/prepare-deploy.cjs
+      - name: Test relay and Worker
+        run: |
+          npm run test:relay
+          npm run test:worker
+          npm run test:worker-runtime
+      - name: Deploy Worker
+        id: deploy
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          wranglerVersion: '4.160.0'
+          command: deploy --config worker/deploy.json
+      - name: Set request authentication secret
+        run: node worker/set-secret.cjs
+      - name: Verify live relay without a paid API request
+        env:
+          RELAY_URL: ${{ steps.deploy.outputs.deployment-url }}
+        run: node worker/verify-deploy.cjs

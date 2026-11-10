@@ -111,6 +111,8 @@ Likely affected: src/App.js, a new src/pages/Tailor.js, new tailoring components
 
 ### M3 — Provider connection and first complete tailoring flow
 
+Hosting target: **Cloudflare Workers Free**, selected by the owner. [Deployment setup](docs/CLOUDFLARE_DEPLOYMENT.md) implements a token-protected beta, rate limiting and manual GitHub deployment. Account secrets, actual deployment, live provider smoke and production CPU verification are still required before public activation.
+
 First backend slice: [local OpenAI relay and setup](docs/PROVIDER_RELAY.md). Fixed endpoint, request-scoped keys, bounded requests, validated summary output, mocked tests and an explicit opt-in live smoke procedure are implemented. The browser connection flow is implemented for configured relays, including in-memory credentials, model selection, exact payload consent, cancellation and mandatory review. Public hosting and real provider-account verification remain pending; M3 is not complete.
 
 - [ ] Complete a transport/security decision before implementing browser credential entry.
