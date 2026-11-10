@@ -30,6 +30,7 @@ jobs:
         run: |
           npm run test:relay
           npm run test:worker
+          npm run test:worker-runtime
       - name: Deploy Worker
         id: deploy
         uses: cloudflare/wrangler-action@v3

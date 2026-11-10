@@ -39,7 +39,7 @@ No Cloudflare account credentials or real provider credentials were available du
 
 ## Local validation
 
-`npm run test:worker` tests the Worker handler with mocked provider/rate-limit calls. `npm run test:relay` tests the shared adapter and local Node relay. `npm run build:worker` bundles with pinned Wrangler using `--dry-run` and requires no account credentials. CI runs all three alongside the app/browser checks. The GitHub production workflow runs only manually on `main` and uses the `cloudflare` environment.
+`npm run test:worker` tests the Worker handler with mocked provider/rate-limit calls. `npm run test:relay` tests the shared adapter and local Node relay. `npm run build:worker` bundles with pinned Wrangler using `--dry-run` and requires no account credentials. `npm run test:worker-runtime` boots the local Cloudflare runtime with synthetic credentials to check authentication, capabilities, CORS and input validation without an AI call. CI runs these checks alongside the app/browser checks. The GitHub production workflow runs only manually on `main` and uses the `cloudflare` environment.
 
 ## Official references
 

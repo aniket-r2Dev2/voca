@@ -35,7 +35,8 @@
     "test:relay": "node --test server/*.test.cjs",
     "tailor:api": "node server/client.cjs",
     "test:worker": "node --test worker/*.test.mjs",
-    "build:worker": "npm exec --yes --package=wrangler@4.160.0 -- wrangler deploy --config worker/wrangler.jsonc --dry-run --outdir ../worker-dist"
+    "build:worker": "npm exec --yes --package=wrangler@4.160.0 -- wrangler deploy --config worker/wrangler.jsonc --dry-run --outdir ../worker-dist",
+    "test:worker-runtime": "node worker/runtime-smoke.cjs"
   },
   "eslintConfig": {
     "extends": [

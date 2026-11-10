@@ -31,6 +31,7 @@ jobs:
         run: |
           npm run test:worker
           npm run build:worker
+          npm run test:worker-runtime
 
       - name: Run unit tests
         run: npm test -- --coverage --watchAll=false
