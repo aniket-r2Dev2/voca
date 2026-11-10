@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Redirecting to Voca</title>
+</head>
+<body>
+  <p>Redirecting to <a href="/voca/">Voca</a>...</p>
+  <script>
+    // Preserve older /voca/resume and /voca/job-match bookmarks on GitHub Pages.
+    (function () {
+      var base = '/voca/';
+      var currentPath = window.location.pathname;
+      var route = currentPath.indexOf(base) === 0
+        ? currentPath.slice(base.length).replace(/^\/+/, '')
+        : '';
+      window.location.replace(base + '#/' + route + window.location.search);
+    }());
+  </script>
+</body>
+</html>
