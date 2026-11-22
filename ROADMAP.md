@@ -1,6 +1,6 @@
 # Voca — Job-tailored Resume Roadmap
 
-Updated: 2026-11-01. This replaces the previous broad career-workspace delivery order.
+Updated: 2026-11-21. This replaces the previous broad career-workspace delivery order.
 
 > Upload your resume. Paste the job description. Use your AI. Review the changes. Download your tailored resume.
 
@@ -46,17 +46,17 @@ Official billing references (checked 2026-11-01):
 
 ## Where we are now
 
-Verified against main at 64cd95b (PR #27 merged).
+Current delivery snapshot: source/JD drafts and TXT/DOCX/PDF import are shipped. Manual AI review supports summaries and experience bullets. Provider code and Cloudflare deployment setup are implemented; hosted activation is paused in #38.
 
 | Area | Existing capability | Work still needed |
 | --- | --- | --- |
-| Career data | Canonical profile, migration, browser persistence | Immutable source snapshots and job-specific versions |
-| Import | Local UTF-8 TXT up to 1 MiB; editable review and confirmation | PDF/DOCX extraction, paste-text input, richer mapping |
-| Resume builder | Manual editing and three visual templates | A focused upload/JD/tailor/review/download workspace |
+| Career data | Canonical profile, migration, immutable source snapshots and saved job-specific drafts | Broader section tailoring |
+| Import | Local TXT/DOCX/text-PDF import and pasted text, with editable review | Richer mapping; OCR remains deferred |
+| Resume builder | Manual editors, visual templates and source/JD/tailor/review/download workspace | Skills review and broader supported changes |
 | Export | Visual PDF; selectable-text PDF with A4/Letter | Editable DOCX, broader script/font support, version-specific export |
 | Matching | Basic deterministic job matching | Structured JD requirements and evidence-linked tailoring |
-| AI | Manual summary handoff plus a local OpenAI relay/CLI; hosted automatic mode pending | Adapters, transport, credentials, consent, structured output and review |
-| Data controls | JSON backup/restore and complete local deletion | Include versions/JDs; always exclude credentials |
+| AI | Manual summary/experience-bullet handoff; OpenAI relay/browser flow and Cloudflare setup | Hosted activation paused in #38; skills and additional providers pending |
+| Data controls | JSON backup/restore and deletion include drafts, JDs and review decisions; credentials excluded | Preserve compatibility as review expands |
 | Quality | Unit/build/desktop/mobile CI; Pages deployment smoke check | Import, AI failures, factual constraints and end-to-end tailored-output tests |
 
 Text PDF currently supports Western European text and explicitly rejects unsupported characters; visual PDF remains available.
@@ -111,7 +111,7 @@ Likely affected: src/App.js, a new src/pages/Tailor.js, new tailoring components
 
 ### M3 — Provider connection and first complete tailoring flow
 
-Hosting target: **Cloudflare Workers Free**, selected by the owner. [Deployment setup](docs/CLOUDFLARE_DEPLOYMENT.md) implements a token-protected beta, rate limiting and manual GitHub deployment. Account secrets, actual deployment, live provider smoke and production CPU verification are still required before public activation.
+Hosting activation is **paused at the owner’s request in #38**. Target: **Cloudflare Workers Free**. [Deployment setup](docs/CLOUDFLARE_DEPLOYMENT.md) implements a token-protected beta, rate limiting and manual GitHub deployment. Account secrets, actual deployment, live provider smoke and production CPU verification are still required before public activation.
 
 First backend slice: [local OpenAI relay and setup](docs/PROVIDER_RELAY.md). Fixed endpoint, request-scoped keys, bounded requests, validated summary output, mocked tests and an explicit opt-in live smoke procedure are implemented. The browser connection flow is implemented for configured relays, including in-memory credentials, model selection, exact payload consent, cancellation and mandatory review. Public hosting and real provider-account verification remain pending; M3 is not complete.
 
@@ -132,7 +132,8 @@ First backend slice: [local OpenAI relay and setup](docs/PROVIDER_RELAY.md). Fix
 - [ ] Treat resume/JD text and returned output as untrusted data; never execute instructions, HTML or tool calls from them.
 - [ ] Validate schema/size and show accept/reject/edit controls before any proposal becomes an approved version.
 - [x] Add manual summary prompt export + response paste with selected evidence, revision binding and mandatory review. Delivered ahead of M3 while hosted transport remains pending.
-- [ ] Extend manual handoff to experience bullets and skills.
+- [x] Extend manual handoff to experience bullets with per-bullet evidence and accept/edit/reject decisions, saved description deltas and PDF export. See [usage and limits](docs/EXPERIENCE_TAILORING.md).
+- [ ] Extend manual handoff to skills.
 - [ ] Add Anthropic and Gemini adapters after each passes the same contract and failure tests.
 - [ ] Add compatible endpoints only with explicit endpoint-specific credential selection; never forward one provider's key to another destination.
 **Acceptance:** upload/source + JD -> API or manual handoff -> review -> save separate version -> PDF works on desktop/mobile. Unsupported facts cannot be silently applied. Automated checks reduce risk but do not guarantee truth; user review is mandatory.

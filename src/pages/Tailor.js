@@ -7,6 +7,7 @@ import { JD_LIMIT, reopenDraft, saveDraft, sourceSnapshot, validDrafts } from '.
 
 import AiHandoff from '../components/resume/AiHandoff';
 import SummaryProposal from '../components/resume/SummaryProposal';
+import ExperienceHandoff from '../components/resume/ExperienceHandoff';
 
 const field = 'mt-1 block w-full rounded border border-gray-400 bg-white p-2 dark:bg-slate-800';
 const button = 'rounded bg-linkedin-700 px-4 py-2 font-medium text-white disabled:opacity-50';
@@ -150,6 +151,7 @@ export default function Tailor() {
       <label className="block">Edit draft summary<textarea className={field} rows={5} value={review.version.profile.summary || ''} onChange={e => { setNotice(''); setReview({ ...review, version: { ...review.version, profile: { ...review.version.profile, summary: e.target.value } } }); }} /></label>
       <AiHandoff key={review.id} review={review} onChange={updated => { setNotice(''); setReview(updated); }} />
       <SummaryProposal key={review.id + JSON.stringify(review.proposal)} review={review} onChange={updated => { setNotice(''); setReview(updated); }} />
+      <ExperienceHandoff key={review.id} review={review} onChange={updated => { setNotice(''); setReview(updated); }} />
       <details><summary>Original resume</summary>
         {resumeTextBlocks(review.source).map((block, i) => <p className="whitespace-pre-wrap py-1" key={i}>{block.text}</p>)}
       </details>
