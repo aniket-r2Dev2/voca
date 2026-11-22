@@ -1,6 +1,7 @@
 import { isCareerProfile } from './careerProfile';
 
 import { validProposal } from './summaryProposal';
+import { validExperienceEdits, validExperienceProposals } from './experienceHandoff';
 
 export const JD_LIMIT = 30000;
 
@@ -9,13 +10,15 @@ export function sourceSnapshot(profile) {
   return source;
 }
 
-// Only the summary is editable in this release. Store the edit alongside its
-// source instead of duplicating the resume or referring back to the live master.
+// Store summary/experience edits alongside the immutable source snapshot.
 export function reopenDraft(draft) {
   const { source, summary } = draft;
   return {
     ...draft,
-    version: { ...source, profile: { ...source.profile, summary } }
+    version: { ...source, profile: { ...source.profile, summary }, experiences: source.experiences.map((entry, index) => {
+      const edit = draft.experienceEdits?.find(item => item.experienceIndex === index);
+      return edit ? { ...entry, description: edit.description } : entry;
+    }) }
   };
 }
 
@@ -30,6 +33,8 @@ export function validDrafts(drafts) {
       && typeof draft.createdAt === 'string' && typeof draft.updatedAt === 'string'
       && typeof draft.summary === 'string' && isCareerProfile(draft.source)
       && draft.source.tailorDrafts === undefined && validProposal(draft.proposal, draft.source)
+      && validExperienceEdits(draft.experienceEdits, draft.source)
+      && validExperienceProposals(draft.experienceProposals, draft.source)
       && typeof draft.job?.description === 'string' && Boolean(draft.job.description.trim())
       && draft.job.description.length <= JD_LIMIT
       && ['role', 'company'].every(key => typeof draft.job[key] === 'string' && draft.job[key].length <= 180);
@@ -42,11 +47,22 @@ export function saveDraft(profile, review, now = new Date().toISOString()) {
   if ((previous?.revision ?? 0) !== review.revision) {
     throw new Error('This saved draft changed or was deleted. Reopen it before saving again.');
   }
+  const source = previous?.source ?? review.source;
+  if (review.version.experiences.length !== source.experiences.length) throw new Error('Experience entries cannot be added or removed from this draft.');
+  const experienceEdits = [];
+  review.version.experiences.forEach((entry, experienceIndex) => {
+    const original = source.experiences[experienceIndex];
+    if (JSON.stringify(entry) === JSON.stringify(original)) return;
+    if (!entry || !original || JSON.stringify({ ...entry, description: original.description }) !== JSON.stringify(original)) throw new Error('Employer, role and date fields must remain unchanged.');
+    experienceEdits.push({ experienceIndex, description: entry.description });
+  });
   const draft = {
     schemaVersion: 1,
     id: review.id,
     revision: review.revision + 1,
-    source: previous?.source ?? review.source,
+    source,
+    ...(experienceEdits.length && { experienceEdits }),
+    ...(review.experienceProposals && { experienceProposals: review.experienceProposals }),
     job: review.job,
     summary: review.version.profile.summary || '',
     ...(review.proposal && { proposal: review.proposal }),
