@@ -1,6 +1,6 @@
 # Voca — Job-tailored Resume Roadmap
 
-Updated: 2026-11-21. This replaces the previous broad career-workspace delivery order.
+Updated: 2026-11-23. This replaces the previous broad career-workspace delivery order.
 
 > Upload your resume. Paste the job description. Use your AI. Review the changes. Download your tailored resume.
 
@@ -53,7 +53,7 @@ Current delivery snapshot: source/JD drafts and TXT/DOCX/PDF import are shipped.
 | Career data | Canonical profile, migration, immutable source snapshots and saved job-specific drafts | Broader section tailoring |
 | Import | Local TXT/DOCX/text-PDF import and pasted text, with editable review | Richer mapping; OCR remains deferred |
 | Resume builder | Manual editors, visual templates and source/JD/tailor/review/download workspace | Skills review and broader supported changes |
-| Export | Visual PDF; selectable-text PDF with A4/Letter | Editable DOCX, broader script/font support, version-specific export |
+| Export | Visual PDF; selectable-text PDF and editable DOCX with A4/Letter; draft-specific downloads | Broader text-PDF script/font support and cross-editor DOCX verification |
 | Matching | Basic deterministic job matching | Structured JD requirements and evidence-linked tailoring |
 | AI | Manual summary/experience-bullet handoff; OpenAI relay/browser flow and Cloudflare setup | Hosted activation paused in #38; skills and additional providers pending |
 | Data controls | JSON backup/restore and deletion include drafts, JDs and review decisions; credentials excluded | Preserve compatibility as review expands |
@@ -139,7 +139,7 @@ First backend slice: [local OpenAI relay and setup](docs/PROVIDER_RELAY.md). Fix
 **Acceptance:** upload/source + JD -> API or manual handoff -> review -> save separate version -> PDF works on desktop/mobile. Unsupported facts cannot be silently applied. Automated checks reduce risk but do not guarantee truth; user review is mandatory.
 
 ### M5 — Application-ready downloads and release quality
-- [ ] Add editable DOCX export from approved versions.
+- [x] Add local editable DOCX export from career profiles and current approved draft wording, with A4/Letter and standard single-column layout.
 - [ ] Broaden text-PDF font/script support; test non-Latin names and multilingual content.
 - [ ] Verify reading order, links, long text, pagination and A4/Letter.
 - [ ] Finish accessible keyboard/mobile states, progress, error recovery and empty-state guidance.
