@@ -10,13 +10,13 @@ with zipfile.ZipFile(sys.argv[1]) as z:
  roots={p:E.fromstring(z.read(p)) for p in z.namelist()}
  ns={'w':'http://schemas.openxmlformats.org/wordprocessingml/2006/main'}
  for relpath,root in roots.items():
- if relpath.endswith('.rels'):
-  for rel in root:
-   assert 'TargetMode' not in rel.attrib
-   base='' if relpath=='_rels/.rels' else 'word/'
-   assert base+rel.attrib['Target'] in roots
-assert any(x.attrib.get('ContentType')=='application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml' for x in roots['[Content_Types].xml'])
-doc=roots['word/document.xml']
+  if relpath.endswith('.rels'):
+   for rel in root:
+    assert 'TargetMode' not in rel.attrib
+    base='' if relpath=='_rels/.rels' else 'word/'
+    assert base+rel.attrib['Target'] in roots
+ assert any(x.attrib.get('ContentType')=='application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml' for x in roots['[Content_Types].xml'])
+ doc=roots['word/document.xml']
  text='\\n'.join(''.join(p.itertext()) for p in doc.findall('.//w:p',ns))
  size=doc.find('.//w:pgSz',ns)
  print(json.dumps({'text':text,'size':size.attrib,'parts':list(roots)}))
