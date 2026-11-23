@@ -56,6 +56,15 @@ test('experience suggestions are individually reviewed, saved, reopened and expo
   expect(text).toContain('Wrote unit tests.');
   expect(text).not.toContain('Authored unit tests.');
   expect(text).not.toContain('Built services for 20 users.');
+  const docxPending = page.waitForEvent('download');
+  await page.getByRole('button', { name: 'Download draft DOCX' }).click();
+  const docxPath = await (await docxPending).path();
+  const docxText = require('child_process').execFileSync('python3', ['-c', 'import sys,zipfile,xml.etree.ElementTree as E; z=zipfile.ZipFile(sys.argv[1]); print("".join(E.fromstring(z.read("word/document.xml")).itertext()))', docxPath], { encoding: 'utf8' });
+  expect(docxText).toContain('Developed services for 20 users.');
+  expect(docxText).toContain('Maintained secure identity APIs.');
+  expect(docxText).toContain('Wrote unit tests.');
+  expect(docxText).not.toContain('Authored unit tests.');
+  expect(docxText).not.toContain('Built services for 20 users.');
 });
 test('invalid numeric claims and stale experience responses cannot change a draft', async ({ page }) => {
   const { section, response } = await prepare(page);

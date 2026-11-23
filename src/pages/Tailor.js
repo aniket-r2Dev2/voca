@@ -1,3 +1,4 @@
+import DocxExport from '../components/resume/DocxExport';
 import React, { useEffect, useRef, useState } from 'react';
 import useCareerStore from '../hooks/useCareerStore';
 import { parseResumeText, readResumeFile, RESUME_IMPORT_MAX_BYTES } from '../utils/resumeImport';
@@ -161,6 +162,7 @@ export default function Tailor() {
       <div className="flex flex-wrap gap-3">
         <button className={button} disabled={!storedDraftsValid} onClick={persist}>Save draft</button>
         <button className={button} onClick={download}>Download draft PDF</button>
+        <DocxExport career={review.version} draft />
         <button className="underline" onClick={() => { setReview(null); setError(''); }}>{review.revision ? 'Back to saved drafts' : 'Discard draft and edit inputs'}</button>
       </div>
     </section>}

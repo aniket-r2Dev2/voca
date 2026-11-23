@@ -1,3 +1,4 @@
+import DocxExport from '../components/resume/DocxExport';
 import React, { useRef, useState } from 'react';
 import { Download, Edit, Eye, FileText, Layout, Printer, Trash2 } from 'lucide-react';
 import { useReactToPrint } from 'react-to-print';
@@ -172,6 +173,8 @@ const Resume = () => {
           </div>
           {textPdfError && <p role="alert" className="mt-3 text-sm text-red-700 dark:text-red-300">{textPdfError}</p>}
         </section>}
+
+        {hasProfile && <DocxExport career={careerProfile} />}
 
         <ResumeImport current={careerProfile} onSave={handleResumeImport} onBackup={downloadCareerBackup} />
 
