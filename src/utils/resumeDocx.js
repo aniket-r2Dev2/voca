@@ -13,7 +13,7 @@ export function resumeDocxParts(career, { paperSize = 'a4' } = {}) {
   if (!blocks.length) throw new Error('Add career details before downloading a DOCX.');
   if (blocks.reduce((sum, block) => sum + block.text.length, 0) > 200000) throw new Error('This resume is too long for DOCX export. Shorten it to under 200,000 characters.');
   // XML 1.0 cannot represent these characters; fail without silently dropping text.
-  if (blocks.some(block => /[^\u0009\u000A\u000D\u0020-\uD7FF\uE000-\uFFFD\u{10000}-\u{10FFFF}]/u.test(block.text))) throw new Error('This resume contains invalid text characters. Remove them before downloading a DOCX.');
+  if (blocks.some(block => /[^\t\n\r\u0020-\uD7FF\uE000-\uFFFD\u{10000}-\u{10FFFF}]/u.test(block.text))) throw new Error('This resume contains invalid text characters. Remove them before downloading a DOCX.');
   const paragraphs = blocks.map(block => block.text.replace(/\r\n?/g, '\n').split('\n').map(line => {
     const content = line.split('\t').map(part => `<w:t xml:space="preserve">${escapeXml(part)}</w:t>`).join('<w:tab/>');
     return `<w:p><w:pPr><w:pStyle w:val="${styles[block.style][0]}"/></w:pPr><w:r>${content}</w:r></w:p>`;
