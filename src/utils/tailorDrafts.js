@@ -1,3 +1,4 @@
+import { validRequirementMap } from './requirementMap';
 import { isCareerProfile } from './careerProfile';
 
 import { validProposal } from './summaryProposal';
@@ -35,6 +36,7 @@ export function validDrafts(drafts) {
       && draft.source.tailorDrafts === undefined && validProposal(draft.proposal, draft.source)
       && validExperienceEdits(draft.experienceEdits, draft.source)
       && validExperienceProposals(draft.experienceProposals, draft.source)
+      && validRequirementMap(draft.requirementMap, draft.source, draft.job)
       && typeof draft.job?.description === 'string' && Boolean(draft.job.description.trim())
       && draft.job.description.length <= JD_LIMIT
       && ['role', 'company'].every(key => typeof draft.job[key] === 'string' && draft.job[key].length <= 180);
@@ -63,6 +65,7 @@ export function saveDraft(profile, review, now = new Date().toISOString()) {
     source,
     ...(experienceEdits.length && { experienceEdits }),
     ...(review.experienceProposals && { experienceProposals: review.experienceProposals }),
+    ...(review.requirementMap && { requirementMap: review.requirementMap }),
     job: review.job,
     summary: review.version.profile.summary || '',
     ...(review.proposal && { proposal: review.proposal }),
