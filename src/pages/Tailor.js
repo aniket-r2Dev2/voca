@@ -1,3 +1,4 @@
+import RequirementMap from '../components/resume/RequirementMap';
 import DocxExport from '../components/resume/DocxExport';
 import React, { useEffect, useRef, useState } from 'react';
 import useCareerStore from '../hooks/useCareerStore';
@@ -149,6 +150,7 @@ export default function Tailor() {
     </form> : <section className="space-y-4">
       <h2 className="text-xl font-semibold">{[review.job.role, review.job.company].filter(Boolean).join(' at ') || 'Job-specific draft'}</h2>
       <details><summary>Job description</summary><p className="whitespace-pre-wrap">{review.job.description}</p></details>
+      <RequirementMap key={review.id} review={review} onChange={updated => { setNotice(''); setReview(updated); }} />
       <label className="block">Edit draft summary<textarea className={field} rows={5} value={review.version.profile.summary || ''} onChange={e => { setNotice(''); setReview({ ...review, version: { ...review.version, profile: { ...review.version.profile, summary: e.target.value } } }); }} /></label>
       <AiHandoff key={review.id} review={review} onChange={updated => { setNotice(''); setReview(updated); }} />
       <SummaryProposal key={review.id + JSON.stringify(review.proposal)} review={review} onChange={updated => { setNotice(''); setReview(updated); }} />
