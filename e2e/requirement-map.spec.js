@@ -57,7 +57,7 @@ test('invented and duplicate requirement quotes fail without altering the checkl
   await expect(section.getByRole('alert')).toBeVisible();
   await expect(section.getByRole('article')).toHaveCount(1);
   const first = section.getByRole('article');
-  await expect(first.getByLabel('Evidence assessment').locator('option[value=supported]')).toBeDisabled();
+  await expect(first.getByLabel('Evidence assessment').locator('option[value=supported]')).toHaveJSProperty('disabled', true);
   await first.getByLabel('Link original resume evidence').selectOption({label:'Summary: Built Java services.'});
   await first.getByLabel('Evidence assessment').selectOption('partial');
   await expect(first.getByLabel('Evidence assessment')).toHaveValue('partial');
