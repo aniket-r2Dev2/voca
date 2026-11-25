@@ -1,6 +1,6 @@
 # Voca — Job-tailored Resume Roadmap
 
-Updated: 2026-11-24. This replaces the previous broad career-workspace delivery order.
+Updated: 2026-11-25. This replaces the previous broad career-workspace delivery order.
 
 > Upload your resume. Paste the job description. Use your AI. Review the changes. Download your tailored resume.
 
@@ -55,7 +55,7 @@ Current delivery snapshot: source/JD drafts and TXT/DOCX/PDF import are shipped.
 | Resume builder | Manual editors, visual templates and source/JD/tailor/review/download workspace | Skills review and broader supported changes |
 | Export | Visual PDF; selectable-text PDF and editable DOCX with A4/Letter; draft-specific downloads | Broader text-PDF script/font support and cross-editor DOCX verification |
 | Matching | Basic deterministic job matching; local JD quote checklist with original-resume evidence and user-reviewed support/gaps | Automatic requirement extraction and richer semantic analysis |
-| AI | Manual summary/experience-bullet handoff; OpenAI relay/browser flow and Cloudflare setup | Hosted activation paused in #38; skills and additional providers pending |
+| AI | Manual summary/experience-bullet/skills handoff; OpenAI relay/browser flow and Cloudflare setup | Hosted activation paused in #38; additional providers pending |
 | Data controls | JSON backup/restore and deletion include drafts, JDs and review decisions; credentials excluded | Preserve compatibility as review expands |
 | Quality | Unit/build/desktop/mobile CI; Pages deployment smoke check | Import, AI failures, factual constraints and end-to-end tailored-output tests |
 
@@ -134,7 +134,7 @@ First backend slice: [local OpenAI relay and setup](docs/PROVIDER_RELAY.md). Fix
 - [ ] Validate schema/size and show accept/reject/edit controls before any proposal becomes an approved version.
 - [x] Add manual summary prompt export + response paste with selected evidence, revision binding and mandatory review. Delivered ahead of M3 while hosted transport remains pending.
 - [x] Extend manual handoff to experience bullets with per-bullet evidence and accept/edit/reject decisions, saved description deltas and PDF export. See [usage and limits](docs/EXPERIENCE_TAILORING.md).
-- [ ] Extend manual handoff to skills.
+- [x] Extend manual handoff to explicit source-supported skill additions, with accept/edit/reject, saved evidence and decisions, and PDF/DOCX export. See [usage and limits](docs/SKILLS_HANDOFF.md).
 - [ ] Add Anthropic and Gemini adapters after each passes the same contract and failure tests.
 - [ ] Add compatible endpoints only with explicit endpoint-specific credential selection; never forward one provider's key to another destination.
 **Acceptance:** upload/source + JD -> API or manual handoff -> review -> save separate version -> PDF works on desktop/mobile. Unsupported facts cannot be silently applied. Automated checks reduce risk but do not guarantee truth; user review is mandatory.
