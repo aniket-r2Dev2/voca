@@ -1,3 +1,4 @@
+import SkillsHandoff from '../components/resume/SkillsHandoff';
 import RequirementMap from '../components/resume/RequirementMap';
 import DocxExport from '../components/resume/DocxExport';
 import React, { useEffect, useRef, useState } from 'react';
@@ -154,6 +155,7 @@ export default function Tailor() {
       <label className="block">Edit draft summary<textarea className={field} rows={5} value={review.version.profile.summary || ''} onChange={e => { setNotice(''); setReview({ ...review, version: { ...review.version, profile: { ...review.version.profile, summary: e.target.value } } }); }} /></label>
       <AiHandoff key={review.id} review={review} onChange={updated => { setNotice(''); setReview(updated); }} />
       <SummaryProposal key={review.id + JSON.stringify(review.proposal)} review={review} onChange={updated => { setNotice(''); setReview(updated); }} />
+      <SkillsHandoff key={review.id} review={review} onChange={updated => { setNotice(''); setReview(updated); }} />
       <ExperienceHandoff key={review.id} review={review} onChange={updated => { setNotice(''); setReview(updated); }} />
       <details><summary>Original resume</summary>
         {resumeTextBlocks(review.source).map((block, i) => <p className="whitespace-pre-wrap py-1" key={i}>{block.text}</p>)}
