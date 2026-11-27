@@ -1,3 +1,4 @@
+import SkillOrder from '../components/resume/SkillOrder';
 import RequirementsHandoff from '../components/resume/RequirementsHandoff';
 import SkillsHandoff from '../components/resume/SkillsHandoff';
 import RequirementMap from '../components/resume/RequirementMap';
@@ -158,6 +159,7 @@ export default function Tailor() {
       <AiHandoff key={review.id} review={review} onChange={updated => { setNotice(''); setReview(updated); }} />
       <SummaryProposal key={review.id + JSON.stringify(review.proposal)} review={review} onChange={updated => { setNotice(''); setReview(updated); }} />
       <SkillsHandoff key={review.id} review={review} onChange={updated => { setNotice(''); setReview(updated); }} />
+      <SkillOrder review={review} onChange={updated => { setNotice(''); setReview(updated); }} />
       <ExperienceHandoff key={review.id} review={review} onChange={updated => { setNotice(''); setReview(updated); }} />
       <details><summary>Original resume</summary>
         {resumeTextBlocks(review.source).map((block, i) => <p className="whitespace-pre-wrap py-1" key={i}>{block.text}</p>)}

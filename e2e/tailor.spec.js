@@ -31,7 +31,7 @@ test('save, reopen and delete a draft after reloading', async ({ page }) => {
   await page.getByRole('button', { name: 'Review draft' }).click();
   await page.getByLabel('Edit draft summary').fill('Edited copy.');
   await page.getByRole('button', { name: 'Save draft' }).click();
-  await expect(page.getByRole('status')).toContainText('saved');
+  await expect(page.getByRole('status').filter({ hasText: 'Draft saved on this device.' })).toBeVisible();
   await page.reload();
   await page.getByRole('button', { name: 'Backend Engineer' }).click();
   await expect(page.getByLabel('Edit draft summary')).toHaveValue('Edited copy.');
