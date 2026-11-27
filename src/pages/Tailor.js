@@ -1,3 +1,4 @@
+import RequirementsHandoff from '../components/resume/RequirementsHandoff';
 import SkillsHandoff from '../components/resume/SkillsHandoff';
 import RequirementMap from '../components/resume/RequirementMap';
 import DocxExport from '../components/resume/DocxExport';
@@ -151,6 +152,7 @@ export default function Tailor() {
     </form> : <section className="space-y-4">
       <h2 className="text-xl font-semibold">{[review.job.role, review.job.company].filter(Boolean).join(' at ') || 'Job-specific draft'}</h2>
       <details><summary>Job description</summary><p className="whitespace-pre-wrap">{review.job.description}</p></details>
+      <RequirementsHandoff key={review.id} review={review} onChange={updated => { setNotice(''); setReview(updated); }} />
       <RequirementMap key={review.id} review={review} onChange={updated => { setNotice(''); setReview(updated); }} />
       <label className="block">Edit draft summary<textarea className={field} rows={5} value={review.version.profile.summary || ''} onChange={e => { setNotice(''); setReview({ ...review, version: { ...review.version, profile: { ...review.version.profile, summary: e.target.value } } }); }} /></label>
       <AiHandoff key={review.id} review={review} onChange={updated => { setNotice(''); setReview(updated); }} />
