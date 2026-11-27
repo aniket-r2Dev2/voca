@@ -1,3 +1,4 @@
+import { orderedSkills, validSkillOrder } from './skillOrder';
 import { validRequirementProposals } from './requirementsHandoff';
 import { validSkillAdditions, validSkillProposals, skillsWithAdditions } from './skillsHandoff';
 import { validRequirementMap } from './requirementMap';
@@ -18,7 +19,7 @@ export function reopenDraft(draft) {
   const { source, summary } = draft;
   return {
     ...draft,
-    version: { ...source, skills: skillsWithAdditions(source, draft.skillAdditions), profile: { ...source.profile, summary }, experiences: source.experiences.map((entry, index) => {
+    version: { ...source, skills: orderedSkills(skillsWithAdditions(source, draft.skillAdditions), draft.skillOrder), profile: { ...source.profile, summary }, experiences: source.experiences.map((entry, index) => {
       const edit = draft.experienceEdits?.find(item => item.experienceIndex === index);
       return edit ? { ...entry, description: edit.description } : entry;
     }) }
@@ -42,6 +43,7 @@ export function validDrafts(drafts) {
       && validRequirementProposals(draft.requirementProposals, draft.job)
       && validSkillAdditions(draft.skillAdditions, draft.source)
       && validSkillProposals(draft.skillProposals, draft.source)
+      && validSkillOrder(draft.skillOrder, skillsWithAdditions(draft.source, draft.skillAdditions))
       && typeof draft.job?.description === 'string' && Boolean(draft.job.description.trim())
       && draft.job.description.length <= JD_LIMIT
       && ['role', 'company'].every(key => typeof draft.job[key] === 'string' && draft.job[key].length <= 180);
@@ -56,7 +58,7 @@ export function saveDraft(profile, review, now = new Date().toISOString()) {
   }
   const source = previous?.source ?? review.source;
   if (review.version.experiences.length !== source.experiences.length) throw new Error('Experience entries cannot be added or removed from this draft.');
-  if (JSON.stringify(review.version.skills) !== JSON.stringify(skillsWithAdditions(source, review.skillAdditions))) throw new Error('Skill changes must use reviewed source-supported additions.');
+  if (JSON.stringify(review.version.skills) !== JSON.stringify(orderedSkills(skillsWithAdditions(source, review.skillAdditions), review.skillOrder))) throw new Error('Skill changes must use reviewed source-supported additions.');
   const experienceEdits = [];
   review.version.experiences.forEach((entry, experienceIndex) => {
     const original = source.experiences[experienceIndex];
@@ -72,6 +74,7 @@ export function saveDraft(profile, review, now = new Date().toISOString()) {
     ...(experienceEdits.length && { experienceEdits }),
     ...(review.experienceProposals && { experienceProposals: review.experienceProposals }),
     ...(review.requirementMap && { requirementMap: review.requirementMap }),
+    ...(review.skillOrder && { skillOrder: review.skillOrder }),
     ...(review.skillAdditions && { skillAdditions: review.skillAdditions }),
     ...(review.skillProposals && { skillProposals: review.skillProposals }),
     ...(review.requirementProposals && { requirementProposals: review.requirementProposals }),

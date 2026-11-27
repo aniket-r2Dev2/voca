@@ -1,3 +1,4 @@
+import { orderedSkills } from './skillOrder';
 import { requirementEvidence } from './requirementMap';
 export const SKILLS_HANDOFF_LIMIT = 100000;
 const text = (value, limit) => typeof value === 'string' && Boolean(value.trim()) && value.length <= limit;
@@ -78,5 +79,7 @@ export function decideSkill(review, index, decision, edited) {
   if (review.version.skills.some(value => key(value) === key(skill))) throw new Error('This skill is already in the draft. Reject the duplicate.');
   const skillAdditions = [...(review.skillAdditions || []), { skill, evidence: item.evidence }];
   if (!validSkillAdditions(skillAdditions, review.source)) throw new Error('Keep at most 100 unique, source-supported skill additions.');
-  return { ...review, skillProposals, skillAdditions, version: { ...review.version, skills: skillsWithAdditions(review.source, skillAdditions) } };
+  const skills = skillsWithAdditions(review.source, skillAdditions);
+  const skillOrder = review.skillOrder ? [...review.skillOrder, skills.length - 1] : undefined;
+  return { ...review, skillProposals, skillAdditions, ...(skillOrder && { skillOrder }), version: { ...review.version, skills: orderedSkills(skills, skillOrder) } };
 }

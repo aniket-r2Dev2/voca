@@ -1,6 +1,6 @@
 # Voca — Job-tailored Resume Roadmap
 
-Updated: 2026-11-27. This replaces the previous broad career-workspace delivery order.
+Updated: 2026-11-28. This replaces the previous broad career-workspace delivery order.
 
 > Upload your resume. Paste the job description. Use your AI. Review the changes. Download your tailored resume.
 
@@ -52,7 +52,7 @@ Current delivery snapshot: source/JD drafts and TXT/DOCX/PDF import are shipped.
 | --- | --- | --- |
 | Career data | Canonical profile, migration, immutable source snapshots and saved job-specific drafts | Broader section tailoring |
 | Import | Local TXT/DOCX/text-PDF import and pasted text, with editable review | Richer mapping; OCR remains deferred |
-| Resume builder | Manual editors, visual templates and source/JD/tailor/review/download workspace | Skills review and broader supported changes |
+| Resume builder | Manual editors, visual templates and source/JD/tailor/review/download workspace | Broader supported changes |
 | Export | Visual PDF; selectable-text PDF and editable DOCX with A4/Letter; draft-specific downloads | Broader text-PDF script/font support and cross-editor DOCX verification |
 | Matching | Basic deterministic job matching; local JD quote checklist plus reviewed AI requirement extraction via manual handoff | Automatic provider transport and richer semantic analysis |
 | AI | Manual summary/experience-bullet/skills handoff; OpenAI relay/browser flow and Cloudflare setup | Hosted activation paused in #38; additional providers pending |
@@ -127,7 +127,8 @@ First backend slice: [local OpenAI relay and setup](docs/PROVIDER_RELAY.md). Fix
 ### M4 — Trustworthy review, manual handoff and additional providers
 - [x] Add AI-assisted JD requirement extraction through manual handoff, with exact quotes, individual accept/edit/reject and unreviewed checklist insertion. See [usage and limits](docs/REQUIREMENTS_HANDOFF.md).
 - [x] Add a local requirement/evidence checklist with exact JD quotes, supported/partial/gap assessments, source references and saved review notes. See [usage and limits](docs/REQUIREMENT_MAP.md).
-- [ ] Rewrite summary/bullets and prioritize supported skills/experience using the source and JD.
+- [x] Add manual job-specific skill prioritization with keyboard-accessible move/reset controls, saved ordering and PDF/DOCX output. Source skills and reviewed additions retain their content and evidence.
+- [ ] Complete broader AI-assisted prioritization of supported skills/experience using the source and JD; summary/bullet rewriting is available through manual handoff.
 - [ ] Include source entry IDs and an explanation for each suggested change.
 - [ ] Lock employer names, titles, dates, credentials and numerical claims unless the user explicitly edits the underlying source.
 - [ ] Reject unknown source references and prohibited fact changes; flag unsupported JD requirements instead of inserting them.

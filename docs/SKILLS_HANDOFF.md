@@ -21,3 +21,9 @@ Names are limited to 100 characters on a single line; reasons to 2,000; prompt/r
 Unit tests cover literal evidence, duplicates, truncated tokens, malformed/stale responses, pending review, edits, source preservation, batch continuity, saving, backup round trips, invalid restores and legacy drafts. Desktop/mobile tests cover individual decisions, reopened pending/completed review, stale prompts and actual PDF/DOCX Skills content.
 
 Cloudflare activation remains paused in #38. Next suggested work: AI-assisted extraction of JD requirements into the existing review checklist, retaining exact JD quotes and mandatory review. Broader semantic fact checking and additional providers remain open.
+
+## Prioritize skills for a job
+
+Use **Prioritize skills for this job** to move existing or accepted skills up/down before downloading. Controls work with keyboard and touch; the first/last moves are disabled. Reset restores source order followed by accepted additions. New accepted skills append without resetting your chosen order.
+
+Save draft to retain the order across reloads and JSON backup/restore. Preview, PDF and DOCX use the same order. The master profile, source snapshot, skill text/metadata and evidence remain unchanged. Old drafts without ordering retain their original order. Changing order invalidates an already prepared AI prompt; prepare a new prompt before importing its response. This is manual prioritization, not an AI ranking or ATS-score guarantee.
