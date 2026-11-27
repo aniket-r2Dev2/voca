@@ -1,3 +1,4 @@
+import { validRequirementProposals } from './requirementsHandoff';
 import { validSkillAdditions, validSkillProposals, skillsWithAdditions } from './skillsHandoff';
 import { validRequirementMap } from './requirementMap';
 import { isCareerProfile } from './careerProfile';
@@ -38,6 +39,7 @@ export function validDrafts(drafts) {
       && validExperienceEdits(draft.experienceEdits, draft.source)
       && validExperienceProposals(draft.experienceProposals, draft.source)
       && validRequirementMap(draft.requirementMap, draft.source, draft.job)
+      && validRequirementProposals(draft.requirementProposals, draft.job)
       && validSkillAdditions(draft.skillAdditions, draft.source)
       && validSkillProposals(draft.skillProposals, draft.source)
       && typeof draft.job?.description === 'string' && Boolean(draft.job.description.trim())
@@ -72,6 +74,7 @@ export function saveDraft(profile, review, now = new Date().toISOString()) {
     ...(review.requirementMap && { requirementMap: review.requirementMap }),
     ...(review.skillAdditions && { skillAdditions: review.skillAdditions }),
     ...(review.skillProposals && { skillProposals: review.skillProposals }),
+    ...(review.requirementProposals && { requirementProposals: review.requirementProposals }),
     job: review.job,
     summary: review.version.profile.summary || '',
     ...(review.proposal && { proposal: review.proposal }),
